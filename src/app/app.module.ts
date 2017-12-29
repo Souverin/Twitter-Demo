@@ -4,6 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
+import { AuthGuard} from './services/auth-guard.service';
+
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
@@ -26,14 +28,16 @@ import { SearchFieldComponent } from './users-list/search-field/search-field.com
 import { FoundListComponent } from './users-list/found-list/found-list.component';
 import { SbElseWallComponent } from './sb-else-wall/sb-else-wall.component';
 import { HeaderComponent } from './header/header.component';
+import {AuthService} from './services/auth.service';
+import {DisplayService} from './services/display.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
   { path: 'login', component: LoginFormComponent },
   { path: 'register', component: RegisterFormComponent},
-  { path: 'me', component: MyWallComponent},
-  { path: 'users', component: UsersListComponent},
-  { path: 'user/userid', component: SbElseWallComponent}
+  { path: 'me', component: MyWallComponent, canActivate: [AuthGuard]},
+  { path: 'users', component: UsersListComponent, canActivate: [AuthGuard]},
+  { path: 'user/userid', component: SbElseWallComponent, canActivateChild: [AuthGuard]}
 ]
 @NgModule({
   declarations: [
@@ -62,7 +66,8 @@ const appRoutes: Routes = [
     AngularFireDatabaseModule,
     AngularFireModule
   ],
-  providers: [],
+  providers: [AuthGuard, AuthService, DisplayService],
   bootstrap: [AppComponent]
+
 })
 export class AppModule { }

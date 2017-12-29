@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
-// import {AngularFireModule} from 'angularfire2';
-// import {environment} from '../../environments/environment';
+import { AuthService} from '../services/auth.service';
+
 
 @Component({
   selector: 'app-login-form',
@@ -14,13 +14,15 @@ import * as firebase from 'firebase';
 
 export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
-  that = this;
-  constructor ( public router: Router) {}
 
+  constructor ( private router: Router,
+                private authService: AuthService) {}
   ngOnInit() {
-
+    this.authService.successfulLog = false;
     this.loginForm = new FormGroup({
-      'password': new FormControl(null, [Validators.required]),
+      'password': new FormControl(null,
+        [Validators.required,
+        Validators.maxLength(20), Validators.minLength(6), Validators.nullValidator]),
       'email': new FormControl(null, [Validators.required, Validators.email]),
     });
   }
@@ -29,6 +31,7 @@ export class LoginFormComponent implements OnInit {
         .signInWithEmailAndPassword(this.email, this.password)
         .then( () => {
           this.router.navigate(['me']);
+          this.authService.successfulLog = true;
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -50,8 +53,5 @@ export class LoginFormComponent implements OnInit {
   }
   get password() {
     return this.loginForm.get('password').value;
-  }
-  get thatThis() {
-    return this.that;
   }
 }
