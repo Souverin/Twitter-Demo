@@ -1,31 +1,15 @@
 <app-start-page></app-start-page>
-<!--<form>-->
-    <!--<div class="form-group">-->
-      <!--<label for="exampleInputEmail1">Email address</label>-->
-      <!--<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">-->
-    <!--</div>-->
-    <!--<div class="form-group">-->
-      <!--<label for="exampleInputPassword1">Password</label>-->
-      <!--<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">-->
-    <!--</div>-->
-    <!--<div class="form-group">-->
-      <!--<label  for="Name">First Name</label>-->
-      <!--<input type="text" class="form-control mb-2 mb-sm-0" id="Name" placeholder="First Name">-->
-    <!--</div>-->
-    <!--<div class="form-group">-->
-      <!--<label  for="inlineFormInput">Last Name</label>-->
-      <!--<input type="text" class="form-control mb-2 mb-sm-0" id="inlineFormInput" placeholder="Last Name">-->
-    <!--</div>-->
-    <!--<button class="btn btn-primary">Create account</button>-->
-  <!--</form>-->
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="loginForm"
+      (ngSubmit)="onLogin()">
   <div class="form-group">
     <label for="email">Enter Email</label>
     <input type="text"
       id="email"
       class="form-control"
       placeholder="Enter email"
-      formControlName = "email">
+      formControlName = "email"
+      [ngClass] = "{'ng-touched': this.logged}"
+    >
     <span
       *ngIf="emailIsInvalid()"
       class="help-block"
@@ -38,7 +22,21 @@
         id="password"
         formControlName = "password"
         placeholder="Enter password"
-        class="form-control">
+        class="form-control"
+        [ngClass] = "{'ng-touched': this.logged}"
+        >
     </div>
+    <span
+      *ngIf="NoPassword()"
+      class="help-block"
+    >Enter the password!</span>
+    <span
+      *ngIf="TooSmallPassword()"
+      class="help-block"
+    >The password should contain more than 6 symbols!</span>
+    <span
+      *ngIf="TooBigPassword()"
+      class="help-block"
+    >The password should contain less than 20 symbols!</span>
   <button class="btn btn-primary" type="submit">Login</button>
 </form>

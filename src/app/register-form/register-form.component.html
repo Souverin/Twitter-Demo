@@ -1,16 +1,6 @@
 <app-start-page></app-start-page>
-<!--<form>-->
-  <!--<div class="form-group">-->
-    <!--<label for="exampleInputEmail1">Email address</label>-->
-    <!--<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">-->
-  <!--</div>-->
-  <!--<div class="form-group">-->
-    <!--<label for="exampleInputPassword1">Password</label>-->
-    <!--<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">-->
-  <!--</div>-->
-  <!--<button class="btn btn-primary">Login</button>-->
-<!--</form>-->
-<form [formGroup]="this.authService.registerForm" (ngSubmit)="this.authService.onRegister()">
+<form [formGroup]="this.authService.registerForm"
+      (ngSubmit)="this.authService.onRegister()">
   <div class="form-group">
     <label for="email">Enter Email</label>
     <input
@@ -19,10 +9,11 @@
       class="form-control"
       placeholder="Enter email"
       formControlName = "email"
+      [ngClass] = "{'ng-touched': this.authService.registered}"
     >
     <span
     *ngIf="this.authService.emailIsInvalid()">
-      The email is Invalid!
+      Please enter a valid email!
     </span>
   </div>
     <div class="form-group">
@@ -32,11 +23,21 @@
         id="password"
         formControlName = "password"
         placeholder="Enter password"
-        class="form-control">
-      <span
-        *ngIf="this.authService.passwordIsTooBig()"
-      >The password is too long(not more than 20 symbols)</span>
+        class="form-control"
+        [ngClass] = "{'ng-touched': this.authService.registered}"
+      >
     </div>
+    <span class="help-block"
+    *ngIf="this.authService.NoPassword()"
+    >Enter the password!</span>
+    <span
+      class="help-block"
+      *ngIf="this.authService.TooSmallPassword()"
+    >The password should contain more than 6 symbols!</span>
+    <span
+      *ngIf="this.authService.TooBigPassword()"
+      class="help-block"
+    >The password should contain less than 20 symbols!</span>
     <div class="form-group">
       <label for="firstName">First Name</label>
       <input
@@ -45,8 +46,13 @@
         class="form-control"
         placeholder="First Name"
         formControlName = "firstName"
+        [ngClass] = "{'ng-touched': this.authService.registered}"
       >
     </div>
+    <span
+      *ngIf="this.authService.NoFirstName()"
+      class="help-block"
+    >First Name is Required!</span>
     <div class="form-group">
       <label for="lastName">Last Name</label>
       <input
@@ -55,7 +61,12 @@
         class="form-control"
         placeholder="Last Name"
         formControlName = "lastName"
+        [ngClass] = "{'ng-touched': this.authService.registered}"
       >
     </div>
+  <span
+    *ngIf="this.authService.NoLastName()"
+    class="help-block"
+  >Last Name is Required!</span>
   <button class="btn btn-primary" type="submit">Create account</button>
 </form>
