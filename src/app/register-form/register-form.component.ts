@@ -4,7 +4,10 @@ import { Component, OnInit } from '@angular/core';
 // import * as firebase from 'firebase';
 // import { Router } from '@angular/router';
 // import { UserIdInfo } from '../shared/userid-info';
-import {AuthService} from '../services/auth.service';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
+import * as firebase from 'firebase';
+import {RenderMyPageService} from '../services/render-my-page.service';
+import { AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-register-form',
@@ -14,7 +17,10 @@ import {AuthService} from '../services/auth.service';
 
 
 export class RegisterFormComponent implements OnInit {
-  constructor(protected authService: AuthService) {
+  registerForm: FormGroup;
+  registered;
+  constructor(protected renderMyPage: RenderMyPageService,
+              protected authService: AuthService) {
     // const afList = db.list('items');
     // afList.push({name: 'item'});
     // const listObservable = afList.snapshotChanges();
@@ -23,61 +29,82 @@ export class RegisterFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.initializeNewRegisterFormGroup();
-    // this.registerForm = new FormGroup({
-    //   'password': new FormControl(null),
-    //   'email': new FormControl(null),
-    //   'firstName': new FormControl(null),
-    //   'lastName': new FormControl(null)
-    // });
-    // onSubmit() {
-    //   console.log(this.email, this.password);
-    //   firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-    //     .then(() => {
-    //       this.router.navigate(['me']);
-    //       this.authService.successfulLog = true;
-    //       this.afList = this.db.list('users');
-    //       this.afList.push({firstName: this.firstName, lastName: this.lastName});
-    //       console.log(this.firstName, this.lastName, this.afList);
-    //   })
-    //     // .then(() => {
-    //     //   this.createuserIdInfo(this.getUserInfo);
-    //     // })
-    //     .catch(function(error) {
-    //       const errorCode = error.code;
-    //       const errorMessage = error.message;
-    //       if (errorCode === 'auth/operation-not-allowed') {
-    //         alert('Operation is not allowed');
-    //       } else {
-    //         alert(errorMessage);
-    //       }
-    //       console.log(error);
-    //     });
-    // }
-    // emailIsInvalid() {
-    //   return this.email != null && !this.email.valid && this.email.touched;
-    // }
-    // passwordIsTooBig ( ) {
-    //   return this.password !== null && this.password.length > 20;
-    // }
-    // get email() {
-    //   return this.registerForm.get('email').value;
-    // }
-    // get password() {
-    //   return this.registerForm.get('password').value;
-    // }
-    // get firstName() {
-    //   return this.registerForm.get('firstName').value;
-    // }
-    // get lastName() {
-    //   return this.registerForm.get('lastName').value;
-    // }
-    // get getUserInfo() {
-    //   return {
-    //     email: this.email,
-    //     lastName: this.lastName,
-    //     firstName: this.firstName
-    //   };
-    // }
+    this.authService.successfulLog = true;
+    this.registerForm = new FormGroup({
+      'password': new FormControl(null),
+      'email': new FormControl(null),
+      'firstName': new FormControl(null),
+      'lastName': new FormControl(null)
+    });
   }
+    onRegister() {
+      console.log(this.registerForm);
+      this.registered = true;
+      if (!this.registerForm.valid) {
+        return;
+      }
+      this.renderMyPage.renderRegisteredUserInfo (this.email.value, this.password.value, this.firstName.value, this.lastName.value);
+      // console.log(!this.firstName['value'], this.firstName.touched, !this.firstName['value'] && this.firstName.touched);
+      // firebase.auth().createUserWithEmailAndPassword(this.email.value, this.password.value)
+      //   .then(() => {
+      //     this.router.navigate(['me']);
+      //     this.successfulLog = true;
+      //     this.usersList = this.database.list('users');
+      //     this.usersList.push({email: this.email.value, firstName: this.firstName.value, lastName: this.lastName.value});
+      //     console.log(this.usersList);
+      //     this.listObservable = this.usersList.snapshotChanges();
+      //     this.usersList.valueChanges().subscribe(user => {
+      //       if (user) {
+      //         console.log(user);
+      //       }
+      //     });
+      //   })
+      //   .catch(function (error) {
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+      //     if (errorCode === 'auth/operation-not-allowed') {
+      //       alert('Operation is not allowed');
+      //     } else {
+      //       console.log(errorMessage);
+      //     }
+      //     console.log(error);
+      //   });
+    }
+    get email() {
+      return this.registerForm.get('email');
+    }
+    get password() {
+      return this.registerForm.get('password');
+    }
+    get firstName() {
+      return this.registerForm.get('firstName');
+    }
+    get lastName() {
+      return this.registerForm.get('lastName');
+    }
+    get getUserInfo() {
+      return {
+        email: this.email,
+        lastName: this.lastName,
+        firstName: this.firstName
+      };
+    }
+    emailIsInvalid() {
+      return this.email != null && !this.email.valid && (this.email.touched || this.registered);
+    }
+    noPassword() {
+      return !this.password['value'] && (this.password.touched || this.registered);
+    }
+    tooSmallPassword() {
+      return this.password.errors != null && this.password.errors['minlength'] && (this.password.touched || this.registered);
+    }
+    tooBigPassword() {
+      return this.password.errors != null && this.password.errors['maxlength'] && (this.password.touched || this.registered);
+    }
+    noFirstName() {
+      return !this.firstName['value'] && (this.firstName.touched || this.registered);
+    }
+    noLastName() {
+      return !this.lastName['value'] && (this.lastName.touched || this.registered);
+    }
 }
