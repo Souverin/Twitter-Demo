@@ -30,6 +30,7 @@ import { SbElseWallComponent } from './sb-else-wall/sb-else-wall.component';
 import { HeaderComponent } from './header/header.component';
 import {AuthService} from './services/auth.service';
 import {DisplayService} from './services/display.service';
+import {RenderMyPageService} from './services/render-my-page.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -37,8 +38,8 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterFormComponent},
   { path: 'me', component: MyWallComponent, canActivate: [AuthGuard]},
   { path: 'users', component: UsersListComponent, canActivate: [AuthGuard]},
-  { path: 'user/userid', component: SbElseWallComponent, canActivateChild: [AuthGuard]}
-]
+  { path: 'user/user:id', component: SbElseWallComponent, canActivateChild: [AuthGuard]}
+];
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +67,7 @@ const appRoutes: Routes = [
     AngularFireDatabaseModule,
     AngularFireModule
   ],
-  providers: [AuthGuard, AuthService, DisplayService],
+  providers: [AuthGuard, AuthService, DisplayService, RenderMyPageService],
   bootstrap: [AppComponent]
 
 })

@@ -27,15 +27,15 @@
         >
     </div>
     <span
-      *ngIf="NoPassword()"
+      *ngIf="noPassword()"
       class="help-block"
     >Enter the password!</span>
     <span
-      *ngIf="TooSmallPassword()"
+      *ngIf="tooSmallPassword()"
       class="help-block"
     >The password should contain more than 6 symbols!</span>
     <span
-      *ngIf="TooBigPassword()"
+      *ngIf="tooBigPassword()"
       class="help-block"
     >The password should contain less than 20 symbols!</span>
   <button class="btn btn-primary" type="submit">Login</button>

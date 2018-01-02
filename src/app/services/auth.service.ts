@@ -10,15 +10,16 @@ import { patternValidator} from '../shared/pattern-validator';
 export class AuthService {
   // loginForm: FormGroup;
   // formIsInvalid;
+  currUser;
   successfulLog;
   userId;
-  afList;
+  usersList;
   listObservable;
   registerForm: FormGroup;
   private basePath = '/usersIdInfo';
   registered;
   constructor (private router: Router,
-               private db: AngularFireDatabase) {
+               private database: AngularFireDatabase) {
   }
   // initializeNewLoginFormGroup () {
   //   this.successfulLog = false;
@@ -42,8 +43,9 @@ export class AuthService {
           Validators.minLength(6)]),
       'email': new FormControl(null,
         [Validators.required,
-          Validators.email,
-          patternValidator(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+          Validators.email]),
+          // patternValidator
+          // (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       'firstName': new FormControl(null, Validators.required),
       'lastName': new FormControl(null, Validators.required)
     });
@@ -70,8 +72,8 @@ export class AuthService {
   //       // console.log(error);
   //     });
   // }
-  onRegister() {
-    console.log(this.registerForm)
+    onRegister() {
+    console.log(this.registerForm);
     this.registered = true;
     if (!this.registerForm.valid) {
       return;
@@ -81,14 +83,13 @@ export class AuthService {
       .then(() => {
         this.router.navigate(['me']);
         this.successfulLog = true;
-        this.afList = this.db.list('users');
-        this.afList.push({email: this.email, firstName: this.firstName, lastName: this.lastName});
-        this.listObservable = this.afList.snapshotChanges();
-        this.afList.valueChanges().subscribe(user => {
+        this.usersList = this.database.list('users');
+        this.usersList.push({email: this.email.value, firstName: this.firstName.value, lastName: this.lastName.value});
+        console.log(this.usersList);
+        this.listObservable = this.usersList.snapshotChanges();
+        this.usersList.valueChanges().subscribe(user => {
           if (user) {
-            this.userId = user.uid;
             console.log(user);
-            console.log(this.userId); // trash
           }
         });
       })

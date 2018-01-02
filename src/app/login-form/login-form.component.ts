@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators, AbstractControl, ValidatorFn} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
 import { AuthService} from '../services/auth.service';
+import { RenderMyPageService} from '../services/render-my-page.service';
 import { patternValidator} from '../shared/pattern-validator';
+import {AngularFireDatabase} from 'angularfire2/database';
 
 
 @Component({
@@ -16,9 +18,10 @@ import { patternValidator} from '../shared/pattern-validator';
 export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
   logged;
-
   constructor (  private router: Router,
-                protected authService: AuthService) {}
+                protected authService: AuthService,
+                 private database: AngularFireDatabase,
+                 private renderMyPage: RenderMyPageService) {}
   ngOnInit() {
     // this.authService.initializeNewLoginFormGroup();
     this.authService.successfulLog = false;
@@ -38,23 +41,53 @@ export class LoginFormComponent implements OnInit {
     if (!this.loginForm.valid) {
       return;
     }
-      firebase.auth()
-        .signInWithEmailAndPassword(this.email.value, this.password.value)
-        .then( () => {
-          this.router.navigate(['me']);
-          this.authService.successfulLog = true;
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert( errorMessage);
-          // if (errorCode === 'auth/operation-not-allowed') {
-          //   alert('Operation is not allowed');
-          // } else {
-          //   alert(errorMessage);
-          // }
-          // console.log(error);
-        });
+    this.renderMyPage.renderUserInfo(this.email.value, this.password.value);
+      // firebase.auth()
+      //   .signInWithEmailAndPassword(this.email.value, this.password.value)
+      //   .then( metadata => {
+      //     console.log('metadata', metadata);
+      //     // some function that handles the stuff
+      //     this.authService.successfulLog = true;
+      //     this.usersList = this.database.list('users');
+      //     this.listObservable = this.usersList.snapshotChanges();
+      //     this.usersList.valueChanges().subscribe(users => {
+      //       if (users) {
+      //         console.log('email', metadata.email);
+      //         console.log('users', users);
+      //         this.getUserByEmail(metadata.email)
+      //           .then( loggedUser => {
+      //             console.log('dataFromGetByMail', loggedUser);
+      //             localStorage.setItem('loggedUserFirstName', JSON.stringify(loggedUser.firstName));
+      //             localStorage.setItem('loggedUserLastName', JSON.stringify(loggedUser.lastName));
+      //           });
+      //         // this.getUserByEmail(loggedUser.email)
+      //         //   .then( key => {
+      //         //     console.log(key);
+      //         //   });
+      //         // this.getSingleUser(loggedUser.uid)
+      //         //   .then(key => {
+      //         //     console.log('key', key);
+      //         //     localStorage.setItem('user-login', JSON.stringify({ email: this.email.value, key: key }));
+      //         //   })
+      //         //   .catch((err) => {
+      //         //     console.log(err);
+      //         //   });
+      //
+      //         // for (let i = 0; i < user.length; i++) {
+      //         //   if (user[i].email === this.email.value) {
+      //         //     localStorage.setItem('currUser', JSON.stringify(user[i]));
+      //         //     this.authService.currUser = JSON.parse(localStorage.getItem('currUser'));
+      //         //   }
+      //         // }
+      //       }
+      //     });
+      //     this.router.navigate(['me']); // goes in the end
+      //   })
+      //   .catch((error) => {
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+      //     alert( errorMessage);
+      //   });
   }
   get email() {
     return this.loginForm.get('email');
@@ -65,13 +98,13 @@ export class LoginFormComponent implements OnInit {
   emailIsInvalid() {
     return this.email != null && !this.email.valid && (this.email.touched || this.logged);
   }
-  NoPassword() {
+  noPassword() {
     return !this.password['value'] && (this.password.touched || this.logged);
   }
-  TooSmallPassword() {
+  tooSmallPassword() {
     return this.password.errors != null && this.password.errors['minlength'] && (this.password.touched || this.logged);
   }
-  TooBigPassword() {
+  tooBigPassword() {
     return this.password.errors != null && this.password.errors['maxlength'] && (this.password.touched || this.logged);
   }
 }
