@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./my-wall.component.css']
 })
 export class MyWallComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {

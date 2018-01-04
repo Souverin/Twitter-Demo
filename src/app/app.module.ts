@@ -18,10 +18,10 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { StartPageComponent } from './start-page/start-page.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { MyWallComponent } from './my-wall/my-wall.component';
-import { BriefUserInfoComponent } from './my-wall/brief-user-info/brief-user-info.component';
-import { PostNewsFormComponent } from './my-wall/wall/post-news-form/post-news-form.component';
-import { WallComponent } from './my-wall/wall/wall.component';
-import { PostComponent } from './my-wall/wall/post/post.component';
+import { BriefUserInfoComponent } from './sb-else-wall/brief-user-info/brief-user-info.component';
+import { PostNewsFormComponent } from './sb-else-wall/wall/post-news-form/post-news-form.component';
+import { WallComponent } from './sb-else-wall/wall/wall.component';
+import { PostComponent } from './sb-else-wall/wall/post/post.component';
 import { FollowInfoComponent } from './my-wall/follow-info/follow-info.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { SearchFieldComponent } from './users-list/search-field/search-field.component';
@@ -39,7 +39,7 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterFormComponent},
   { path: 'me', component: MyWallComponent, canActivate: [AuthGuard]},
   { path: 'users', component: UsersListComponent, canActivate: [AuthGuard]},
-  { path: 'user/user:id', component: SbElseWallComponent, canActivateChild: [AuthGuard]}
+  { path: 'user/:id', component: SbElseWallComponent, canActivate: [AuthGuard]}
 ];
 @NgModule({
   declarations: [
