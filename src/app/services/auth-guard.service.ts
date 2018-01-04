@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(private authService: AuthService, private router: Router) {}
   canActivate (route: ActivatedRouteSnapshot,
                state: RouterStateSnapshot): Observable<boolean> | boolean {
-    if ( this.authService.successfulLog ) { return true; }
+    if ( JSON.parse(localStorage.getItem('successfulLog')) ) { return true; }
 
     console.log('access denied');
     this.router.navigate(['login']);

@@ -1,0 +1,15 @@
+input {
+  width: 40%;
+  margin: 10px;
+  padding:20px;
+  font-size: 16px;
+}
+.glyphicon {
+  top: -37px;
+  left: 15px;
+}
+.form-group {
+  padding: 10px;
+  background-color: whitesmoke;
+  border: 2px solid #77cae4;
+}

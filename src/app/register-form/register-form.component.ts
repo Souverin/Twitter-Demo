@@ -31,10 +31,13 @@ export class RegisterFormComponent implements OnInit {
   ngOnInit() {
     this.authService.successfulLog = true;
     this.registerForm = new FormGroup({
-      'password': new FormControl(null),
-      'email': new FormControl(null),
-      'firstName': new FormControl(null),
-      'lastName': new FormControl(null)
+      'password': new FormControl(null, [Validators.required,
+        Validators.maxLength(20),
+        Validators.minLength(6)]),
+      'email': new FormControl(null,
+        [Validators.required, Validators.email]),
+      'firstName': new FormControl(null, [Validators.required]),
+      'lastName': new FormControl(null, [Validators.required])
     });
   }
     onRegister() {

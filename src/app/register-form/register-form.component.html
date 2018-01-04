@@ -1,5 +1,7 @@
+<div  class="row justify-content center">
 <app-start-page></app-start-page>
 <form [formGroup]="this.registerForm"
+      class="col-sm-offset-4 col-sm-5 div_centered"
       (ngSubmit)="this.onRegister()">
   <div class="form-group">
     <label for="email">Enter Email</label>
@@ -70,3 +72,4 @@
   >Last Name is Required!</span>
   <button class="btn btn-primary" type="submit">Create account</button>
 </form>
+</div>

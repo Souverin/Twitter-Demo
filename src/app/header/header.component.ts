@@ -11,4 +11,8 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
   }
+  onLogout () {
+    localStorage.setItem('successfulLog', JSON.stringify(false));
+    console.log('successful logout!');
+  }
 }

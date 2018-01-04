@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-found-list',
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./found-list.component.css']
 })
 export class FoundListComponent implements OnInit {
-
+  @Input() users;
   constructor() { }
 
   ngOnInit() {

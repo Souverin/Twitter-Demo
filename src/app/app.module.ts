@@ -19,7 +19,7 @@ import { StartPageComponent } from './start-page/start-page.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { MyWallComponent } from './my-wall/my-wall.component';
 import { BriefUserInfoComponent } from './my-wall/brief-user-info/brief-user-info.component';
-import { PostNewsFormComponent } from './my-wall/post-news-form/post-news-form.component';
+import { PostNewsFormComponent } from './my-wall/wall/post-news-form/post-news-form.component';
 import { WallComponent } from './my-wall/wall/wall.component';
 import { PostComponent } from './my-wall/wall/post/post.component';
 import { FollowInfoComponent } from './my-wall/follow-info/follow-info.component';
@@ -31,6 +31,7 @@ import { HeaderComponent } from './header/header.component';
 import {AuthService} from './services/auth.service';
 import {DisplayService} from './services/display.service';
 import {RenderMyPageService} from './services/render-my-page.service';
+import { FollowedComponent } from './my-wall/follow-info/followed/followed.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -57,6 +58,7 @@ const appRoutes: Routes = [
     FoundListComponent,
     SbElseWallComponent,
     HeaderComponent,
+    FollowedComponent,
   ],
   imports: [
     BrowserModule,

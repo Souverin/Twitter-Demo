@@ -1,0 +1,16 @@
+.username {
+  font-size: 20px;
+}
+img {
+  float: left;
+}
+.email {
+  font-size: 20px;
+}
+.clearfix {
+  background-color: #039be5;
+  overflow: auto;
+  padding: 10px;
+  border: 5px solid #77cae4;
+}
+
