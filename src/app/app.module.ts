@@ -18,7 +18,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { StartPageComponent } from './start-page/start-page.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { MyWallComponent } from './my-wall/my-wall.component';
-import { BriefUserInfoComponent } from './my-wall/brief-user-info/brief-user-info.component';
+import { BriefUserInfoComponent } from './shared/components/brief-user-info/brief-user-info.component';
 import { PostNewsFormComponent } from './my-wall/post-news-form/post-news-form.component';
 import { WallComponent } from './my-wall/wall/wall.component';
 import { PostComponent } from './my-wall/wall/post/post.component';
