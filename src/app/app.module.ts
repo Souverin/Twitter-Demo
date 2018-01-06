@@ -28,10 +28,11 @@ import { SearchFieldComponent } from './users-list/search-field/search-field.com
 import { FoundListComponent } from './users-list/found-list/found-list.component';
 import { SbElseWallComponent } from './sb-else-wall/sb-else-wall.component';
 import { HeaderComponent } from './header/header.component';
+
 import {AuthService} from './services/auth.service';
-import {DisplayService} from './services/display.service';
-import {RenderMyPageService} from './services/render-my-page.service';
 import { FollowedComponent } from './my-wall/follow-info/followed/followed.component';
+import {PostService} from './services/post.service';
+import {UserService} from './services/user.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -69,7 +70,7 @@ const appRoutes: Routes = [
     AngularFireDatabaseModule,
     AngularFireModule
   ],
-  providers: [AuthGuard, AuthService, DisplayService, RenderMyPageService],
+  providers: [AuthGuard, AuthService, PostService, UserService],
   bootstrap: [AppComponent]
 
 })

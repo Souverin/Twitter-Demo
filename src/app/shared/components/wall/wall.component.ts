@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {RenderMyPageService} from '../../../services/render-my-page.service';
+import {PostService} from '../../../services/post.service';
 
 @Component({
   selector: 'app-wall',
@@ -7,18 +7,14 @@ import {RenderMyPageService} from '../../../services/render-my-page.service';
   styleUrls: ['./wall.component.css']
 })
 export class WallComponent implements OnInit {
-  posts;
-  text;
-  text;
+
   postsArray;
-  constructor(private renderMyPageService: RenderMyPageService) { }
+  constructor(private postService: PostService) { }
 
   ngOnInit() {
-    this.text = 'ewrgwerg';
     this.postsArray = [];
-    this.renderMyPageService.getPostsByKey(JSON.parse(localStorage.getItem('loggedUserKey')))
+    this.postService.getPostsByKey(JSON.parse(localStorage.getItem('loggedUserKey')))
       .then(posts => {
-        console.log('posts in me', posts);
         for (const prop in posts) {
           if (prop !== 'key') {
             console.log(posts[prop]);
@@ -26,7 +22,6 @@ export class WallComponent implements OnInit {
           }
 
         }
-        console.log(this.postsArray[1].post);
 
       });
     // this.renderMyPageService.getAllPosts(JSON.parse(localStorage.getItem('loggedUserKey')))

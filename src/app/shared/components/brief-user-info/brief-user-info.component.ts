@@ -1,4 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
+import {UserService} from '../../../services/user.service';
+import {PostService} from '../../../services/post.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-brief-user-info',
@@ -6,19 +9,38 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./brief-user-info.component.css']
 })
 export class BriefUserInfoComponent implements OnInit {
-  // @Input() username = JSON.parse(localStorage.getItem('user-login'));
   userFirstName;
   userLastName;
   userEmail;
   userKey;
-  constructor() {
+  postsTotal;
+  constructor(private userService: UserService,
+              private postService: PostService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.userFirstName = JSON.parse(localStorage.getItem('loggedUserFirstName'));
-    this.userLastName = JSON.parse(localStorage.getItem('loggedUserLastName'));
-    this.userEmail = JSON.parse(localStorage. getItem('loggedUserEmail'));
-    this.userKey = JSON.parse(localStorage.getItem('loggedUserKey'));
+    if (this.route.routeConfig.path === 'me') {
+      console.log(this.route);
+      this.userService.getUserByEmail(JSON.parse(localStorage.getItem('loggedUserEmail')))
+        .then( user => {
+          console.log('dataFromGetByMail', user);
+          this.userFirstName = user.firstName;
+          this.userLastName = user.lastName;
+          this.userEmail = user.email;
+          this.userKey = user.key;
+          this.postService.getPostsLengthByKey(user.key)
+            .then( arg => {
+              console.log('arg', arg);
+              this.postsTotal = arg;
+            });
+        });
+    }
+    else {
+      console.log(this.route.snapshot.params.id);
+    }
+
+
   }
 
 }

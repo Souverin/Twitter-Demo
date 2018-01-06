@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import { UserService} from '../services/user.service';
 
 @Component({
   selector: 'app-sb-else-wall',
@@ -7,10 +8,16 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./sb-else-wall.component.css']
 })
 export class SbElseWallComponent implements OnInit {
-
-  constructor(private route: ActivatedRoute) { }
+  key;
+  constructor(private route: ActivatedRoute,
+              private userService: UserService) { }
 
   ngOnInit() {
+    // this.route.params.subscribe( params => {
+    //   console.log(params);
+    //   this.userService.getUserByKey(params.id)
+    //     .then()
+    // });
   }
 
 }

@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
-import * as firebase from 'firebase';
-import { RenderMyPageService} from '../services/render-my-page.service';
+import { AuthService } from '../services/auth.service';
 import { patternValidator} from '../shared/pattern-validator';
 import {AngularFireDatabase} from 'angularfire2/database';
-import { AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-login-form',
@@ -17,12 +15,8 @@ import { AuthService} from '../services/auth.service';
 export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
   logged;
-  constructor (  private router: Router,
-                 protected authService: AuthService,
-                 private database: AngularFireDatabase,
-                 private renderMyPage: RenderMyPageService) {}
+  constructor (private authService: AuthService) {}
   ngOnInit() {
-    this.authService.successfulLog = false;
     this.loginForm = new FormGroup({
       'password': new FormControl(null,
         [Validators.required,
@@ -39,7 +33,7 @@ export class LoginFormComponent implements OnInit {
     if (!this.loginForm.valid) {
       return;
     }
-    this.renderMyPage.renderUserInfo(this.email.value, this.password.value);
+    this.authService.signIn(this.email.value, this.password.value);
   }
   get email() {
     return this.loginForm.get('email');
