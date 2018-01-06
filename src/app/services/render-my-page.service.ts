@@ -6,6 +6,8 @@ import {Router} from '@angular/router';
 
 @Injectable()
 export class RenderMyPageService {
+  posts;
+  postsList;
   usersList;
   listObservable;
   loggedUserFirstName;
@@ -13,13 +15,12 @@ export class RenderMyPageService {
   constructor(private router: Router,
               protected authService: AuthService,
               private database: AngularFireDatabase) { }
-  renderUserInfo (email: string, password: string) {
+  renderUserInfo(email: string, password: string) {
     firebase.auth()
       .signInWithEmailAndPassword(email, password)
       .then( metadata => {
-        console.log('metadatta', metadata);
-        // some function that handles the stuff
         localStorage.setItem('successfulLog', JSON.stringify(true));
+
         this.usersList = this.database.list('users');
         this.usersList.snapshotChanges().map(actions => {
           console.log('actions', actions);
@@ -34,27 +35,17 @@ export class RenderMyPageService {
                 localStorage.setItem('loggedUserLastName', JSON.stringify(loggedUser.lastName));
                 localStorage.setItem('loggedUserEmail', JSON.stringify(loggedUser.email));
                 localStorage.setItem('loggedUserKey', JSON.stringify(loggedUser.key));
+              }).then(arg => {
+              this.getPostsByKey(JSON.parse(localStorage.getItem('loggedUserKey'))).then( posts => {
+                console.log('posts from logged user', posts);
+                this.posts = posts;
                 this.router.navigate([ 'me' ]);
               });
+            });
           }
         });
-        // this.usersList.valueChanges().subscribe(users => {
-        //   if (users) {
-        //     this.getUserByEmail(metadata.email)
-        //       .then( loggedUser => {
-        //         console.log('dataFromGetByMail', loggedUser);
-        //         localStorage.setItem('loggedUserFirstName', JSON.stringify(loggedUser.firstName));
-        //         localStorage.setItem('loggedUserLastName', JSON.stringify(loggedUser.lastName));
-        //         localStorage.setItem('loggedUserEmail', JSON.stringify(loggedUser.email));
-        //
-        //         this.router.navigate([ 'me' ]);
-        //       });
-        //   }
-        // });
-        // this.router.navigate(['me']); // goes in the end
       })
       .catch((error) => {
-        const errorCode = error.code;
         const errorMessage = error.message;
         alert( errorMessage);
       });
@@ -69,6 +60,8 @@ export class RenderMyPageService {
         console.log('UsersList', this.usersList);
         this.listObservable = this.usersList.snapshotChanges();
         console.log(this.listObservable);
+
+        this.getAllPosts('dsg');
         this.usersList.valueChanges().subscribe(users => {
           if (users) {
             console.log('email', metadata.email);
@@ -95,19 +88,6 @@ export class RenderMyPageService {
         console.log(error);
       });
   }
-  // getUserByEmail(email: string): Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     this.database.list('users').valueChanges().subscribe(userList => {
-  //       console.log('userList', userList);
-  //       for ( let i = 0; i < userList.length; i++) {
-  //         if (userList[i]['email'] === email) {
-  //           resolve(userList[i]);
-  //         }
-  //       }
-  //         reject('no user');
-  //     });
-  //   });
-  // }
   getUserByEmail(email: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.database.list('users').snapshotChanges().map(actions => {
@@ -124,4 +104,50 @@ export class RenderMyPageService {
       });
     });
   }
+
+  getPostsByKey(key: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.database.list('posts').snapshotChanges().map(actions => {
+        console.log('actions', actions);
+        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+      }).subscribe(postsList => {
+        console.log('postsList', postsList);
+        for (let i = 0; i < postsList.length; i++) {
+          if (postsList[i]['key'] === key) {
+            resolve(postsList[i]);
+          }
+        }
+        reject('no posts');
+      });
+    });
+  }
+
+  // getAllPosts(loginUserId: string): Promise<any> {
+  //
+  //   return new Promise((resolve, reject) => {
+  //     this.database.list('posts').valueChanges().subscribe(
+  //       (posts) => {
+  //         debugger;
+  //         console.log(posts[0][loginUserId])
+  //         resolve(posts[loginUserId]);
+  //       },
+  //       (error) => {
+  //         reject(error);
+  //       },
+  //     );
+  //
+  //   });
+  // }
+
+  getAllPosts(loginUserId: string) {
+    this.database.list('posts').valueChanges().subscribe( posts => {
+      console.log('posts from getAllPosts', posts);
+      return posts;
+    });
+  }
+
+  findPostById(posts = [], loginUserId: string): Array<any> {
+    return posts.filter((post) => post.userId === loginUserId);
+  }
+
 }

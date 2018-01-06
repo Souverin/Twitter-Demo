@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AngularFireDatabase} from 'angularfire2/database';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-post-news-form',
@@ -20,10 +21,10 @@ export class PostNewsFormComponent implements OnInit {
   }
   onPost() {
     console.log(this.textarea.value);
-    console.log('keyvalue', );
+    console.log('keyvalue' );
     this.postList = this.database.list(
       `posts/${JSON.parse(localStorage.getItem('loggedUserKey'))}`);
-    this.postList.push({post: this.textarea.value, createdAt: new Date()});
+    this.postList.push({post: this.textarea.value, createdAt: Date()});
     console.log('postList', this.postList);
     this.listObservable = this.postList.snapshotChanges();
     console.log('snapshot changes', this.listObservable)
