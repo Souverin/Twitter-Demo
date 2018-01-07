@@ -15,10 +15,14 @@ export class AuthService {
   signIn(email: string, password: string) {
     firebase.auth()
       .signInWithEmailAndPassword(email, password)
-      .then( (user) => {
+      .then( () => {
         localStorage.setItem('successfulLog', JSON.stringify(true));
         localStorage.setItem('loggedUserEmail', JSON.stringify(email));
-        this.router.navigate([ 'me' ]);
+        this.userService.getUserByEmail(email)
+          .then( (user) => {
+            localStorage.setItem('loggedUserKey', JSON.stringify(user.key));
+            this.router.navigate([ 'me' ]);
+          });
       })
       .catch((error) => {
         const errorMessage = error.message;
@@ -32,7 +36,11 @@ export class AuthService {
         this.usersList = this.database.list('users');
         this.usersList.push({email: email, firstName: firstName, lastName: lastName});
         localStorage.setItem('loggedUserEmail', JSON.stringify(email));
-        this.router.navigate(['me']); // goes in the end
+        this.userService.getUserByEmail(email)
+          .then( (user) => {
+            localStorage.setItem('loggedUserKey', JSON.stringify(user.key));
+            this.router.navigate([ 'me' ]);
+          });
       })
       .catch(function (error) {
         const errorCode = error.code;

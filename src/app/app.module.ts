@@ -33,6 +33,7 @@ import {AuthService} from './services/auth.service';
 import { FollowedComponent } from './my-wall/follow-info/followed/followed.component';
 import {PostService} from './services/post.service';
 import {UserService} from './services/user.service';
+import {FollowService} from './services/follow.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -70,7 +71,7 @@ const appRoutes: Routes = [
     AngularFireDatabaseModule,
     AngularFireModule
   ],
-  providers: [AuthGuard, AuthService, PostService, UserService],
+  providers: [AuthGuard, AuthService, PostService, UserService, FollowService],
   bootstrap: [AppComponent]
 
 })

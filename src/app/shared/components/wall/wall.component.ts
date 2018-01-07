@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PostService} from '../../../services/post.service';
+import {ActivatedRoute} from '@angular/router';
+import {UserService} from '../../../services/user.service';
 
 @Component({
   selector: 'app-wall',
@@ -7,59 +9,31 @@ import {PostService} from '../../../services/post.service';
   styleUrls: ['./wall.component.css']
 })
 export class WallComponent implements OnInit {
-
+  key;
   postsArray;
-  constructor(private postService: PostService) { }
+  constructor(private postService: PostService,
+              private route: ActivatedRoute,
+              private userService: UserService) { }
 
   ngOnInit() {
     this.postsArray = [];
-    this.postService.getPostsByKey(JSON.parse(localStorage.getItem('loggedUserKey')))
-      .then(posts => {
-        for (const prop in posts) {
-          if (prop !== 'key') {
-            console.log(posts[prop]);
-            this.postsArray.push(posts[prop]);
-          }
-
-        }
-
-      });
-    // this.renderMyPageService.getAllPosts(JSON.parse(localStorage.getItem('loggedUserKey')))
-    //   .then(posts => {
-    //     debugger;
-    //     this.posts = posts;
-    //   })
-    //   .catch(err => console.log('ERR'));
-    /*
-    this.postsArray = [];
-    this.renderMyPageService.getPostsByKey(JSON.parse(localStorage.getItem('loggedUserKey'))).then(posts => {
-      this.posts = posts;
-
-      // for (const i in this.posts) {
-      //   this.postsArray.push(this.posts[i]);
-      // }
-      const keys = [];
-      for (const post in this.posts) {
-        keys.push(post);
-      }
-
-      const posts = [];
-      for (let i = 0; i < keys.length; i++) {
-        posts.push(this.posts[keys[i]].post);
-      }
-      console.log(posts)
-      this.postsArray = posts.filter(Boolean);
-      console.log(this.postsArray)
-
-      // console.log(this.postsArray)
-      // this.postsArray.shift();
+    this.route.params.subscribe(params => {
+        this.key = this.route.routeConfig.path === 'me' ?
+          JSON.parse(localStorage.getItem('loggedUserKey')) : params.id;
+        this.postService.getPostsByKey(this.key)
+          .then(posts => {
+            this.userService.getUserByKey(this.key)
+              .then( user => {
+                for (const prop in posts) {
+                  if (prop !== 'key') {
+                    console.log('posts[prop]', posts[prop]);
+                    posts[prop].username = user.firstName + ' ' + user.lastName;
+                    this.postsArray.unshift(posts[prop]);
+                  }
+                }
+              });
+          });
     });
-    console.log('postsArray', this.postsArray);
-    // this.posts = [`The new syntax has a couple of things to note.The first is *ngFor.The * is a shorthand for using the new Angular template syntax with the template tag.`];
-    // for ( let i = 0; i < 10; i++) {
-    //   this.posts.push(this.posts[0]);
-    // }
-    */
   }
 
 }

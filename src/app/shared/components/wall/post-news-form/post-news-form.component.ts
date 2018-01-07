@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {DatePipe} from '@angular/common';
+import {Router} from '@angular/router';
+import {PostService} from '../../../../services/post.service';
 
 @Component({
   selector: 'app-post-news-form',
@@ -12,7 +14,9 @@ export class PostNewsFormComponent implements OnInit {
   postForm: FormGroup;
   postList;
   listObservable;
-  constructor(private database: AngularFireDatabase) { }
+  constructor(private database: AngularFireDatabase,
+              private router: Router,
+              private postService: PostService) { }
 
   ngOnInit() {
     this.postForm = new FormGroup({
@@ -20,20 +24,7 @@ export class PostNewsFormComponent implements OnInit {
       });
   }
   onPost() {
-    console.log(this.textarea.value);
-    console.log('keyvalue' );
-    this.postList = this.database.list(
-      `posts/${JSON.parse(localStorage.getItem('loggedUserKey'))}`);
-    this.postList.push({post: this.textarea.value, createdAt: Date()});
-    console.log('postList', this.postList);
-    this.listObservable = this.postList.snapshotChanges();
-    console.log('snapshot changes', this.listObservable)
-    this.postList.valueChanges().subscribe(data => {
-      if (data) {
-        console.log('data', data);
-      }
-    });
-
+    this.postService.createPost(this.textarea.value);
   }
   get textarea () {
     return this.postForm.get('textarea');

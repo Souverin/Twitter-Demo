@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { UserService} from '../services/user.service';
+import {FollowService} from '../services/follow.service';
 
 @Component({
   selector: 'app-sb-else-wall',
@@ -8,16 +9,28 @@ import { UserService} from '../services/user.service';
   styleUrls: ['./sb-else-wall.component.css']
 })
 export class SbElseWallComponent implements OnInit {
-  key;
   constructor(private route: ActivatedRoute,
-              private userService: UserService) { }
+              private router: Router,
+              private userService: UserService,
+              protected followService: FollowService) { }
 
   ngOnInit() {
-    // this.route.params.subscribe( params => {
-    //   console.log(params);
-    //   this.userService.getUserByKey(params.id)
-    //     .then()
-    // });
+    console.log('SbElseWallOnInit');
+    this.route.params.subscribe( params => {
+      console.log(params);
+      this.userService.getUserByKey(params.id)
+        .then(arg => {
+          if (arg.email === JSON.parse(localStorage.getItem('loggedUserEmail'))) {
+            this.router.navigate(['me']);
+          }
+          console.log('arg.key', arg.key);
+          localStorage.setItem('currUserKey', JSON.stringify(arg.key));
+        })
+        .catch( (error) => {
+          console.log(error.code);
+          this.router.navigate(['me']);
+      });
+    });
   }
 
 }

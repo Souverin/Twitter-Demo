@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import {AngularFireDatabase} from 'angularfire2/database';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class PostService {
 
   constructor(private database: AngularFireDatabase) { }
-
+  postList;
   getPostsByKey(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.database.list('posts').snapshotChanges().map(actions => {
@@ -45,4 +46,19 @@ export class PostService {
       });
     });
   }
+  createPost(text: string) {
+    console.log(text);
+    this.postList = this.database.list(
+      `posts/${JSON.parse(localStorage.getItem('loggedUserKey'))}`);
+    return Observable.of(this.postList.push({post: text, createdAt: Date()}));
+    // this.postList.valueChanges()
+    //   .subscribe(data => {
+    //   if (data) {
+    //     console.log('data', data);
+    //   }
+    // });
+  }
+  // addPost(post: Post): Observable<any> {
+  //   return Observable.of(this.db.list('posts').push(post));
+  // }
 }
