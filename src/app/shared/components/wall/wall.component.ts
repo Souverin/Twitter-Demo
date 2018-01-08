@@ -30,7 +30,10 @@ export class WallComponent implements OnInit {
                   }
                 }
               });
-          });
+          })
+          .catch( error => {
+            this.postService.noPosts = true;
+      });
     });
   }
 

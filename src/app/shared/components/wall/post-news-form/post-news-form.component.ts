@@ -12,8 +12,7 @@ import {PostService} from '../../../../services/post.service';
 })
 export class PostNewsFormComponent implements OnInit {
   postForm: FormGroup;
-  postList;
-  listObservable;
+  clicked;
   constructor(private database: AngularFireDatabase,
               private router: Router,
               private postService: PostService) { }
@@ -24,9 +23,17 @@ export class PostNewsFormComponent implements OnInit {
       });
   }
   onPost() {
+    this.clicked = true;
+    if (this.postForm.invalid) {
+      return;
+    }
     this.postService.createPost(this.textarea.value);
+    this.postForm.reset();
   }
   get textarea () {
     return this.postForm.get('textarea');
+  }
+  tooMuchSymbols() {
+    return this.textarea.errors != null && this.textarea.errors['maxlength'] && (this.textarea.touched || this.clicked);
   }
 }

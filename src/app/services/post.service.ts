@@ -10,6 +10,7 @@ export class PostService {
   username;
   postList;
   postsArray;
+  noPosts;
 
   getPostsByKey(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -53,7 +54,6 @@ export class PostService {
   }
 
   createPost(text: string) {
-    console.log(text);
     this.postList = this.database.list(
       `posts/${JSON.parse(localStorage.getItem('loggedUserKey'))}`);
     this.postList.push({post: text, createdAt: Date()});
@@ -61,5 +61,8 @@ export class PostService {
       + ' ' + JSON.parse(localStorage.getItem('loggedUserLastName'))
 
     this.postsArray.unshift({post: text, createdAt: Date(), username: this.username});
+    if (this.noPosts) {
+      this.noPosts = false;
+    }
   }
 }

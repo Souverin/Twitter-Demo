@@ -7,3 +7,6 @@ form {
   padding: 20px;
   border-bottom: 1px solid #77cae4;
 }
+.help-block {
+  color: red;
+}

@@ -27,7 +27,6 @@ export class RegisterFormComponent implements OnInit {
     });
   }
     onRegister() {
-      console.log(this.registerForm);
       this.registered = true;
       if (!this.registerForm.valid) {
         return;

@@ -1,7 +1,8 @@
 <div>
+  <ng-content></ng-content>
   <p>
     {{postInfo.username}}
-    {{postInfo.createdAt}}
+    on {{postInfo.createdAt | date: 'dd LLLL yyyy, аt HH:mm'}}
   </p>
   <p class="post">
     {{postInfo.post}}

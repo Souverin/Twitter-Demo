@@ -12,7 +12,6 @@ import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import * as firebase from 'firebase';
 firebase.initializeApp(environment.firebase);
-
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { StartPageComponent } from './start-page/start-page.component';
@@ -34,9 +33,12 @@ import { FollowedComponent } from './my-wall/follow-info/followed/followed.compo
 import {PostService} from './services/post.service';
 import {UserService} from './services/user.service';
 import {FollowService} from './services/follow.service';
+import {LogoutService} from './services/logout.service';
+import {SearchService} from './services/search.service';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  { path: '', redirectTo:
+      JSON.parse(localStorage.getItem('successfulLogout')) ? 'login' : 'me', pathMatch: 'full'},
   { path: 'login', component: LoginFormComponent },
   { path: 'register', component: RegisterFormComponent},
   { path: 'me', component: MyWallComponent, canActivate: [AuthGuard]},
@@ -71,7 +73,7 @@ const appRoutes: Routes = [
     AngularFireDatabaseModule,
     AngularFireModule
   ],
-  providers: [AuthGuard, AuthService, PostService, UserService, FollowService],
+  providers: [AuthGuard, AuthService, PostService, UserService, FollowService, LogoutService, SearchService],
   bootstrap: [AppComponent]
 
 })

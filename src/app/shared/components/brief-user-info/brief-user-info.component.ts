@@ -33,6 +33,9 @@ export class BriefUserInfoComponent implements OnInit {
               .then( posts => {
                 console.log('arg', posts);
                 this.postsTotal = posts;
+              })
+              .catch(error => {
+                this.postsTotal = 0;
               });
           });
       } else {
@@ -51,32 +54,10 @@ export class BriefUserInfoComponent implements OnInit {
               });
           })
           .catch( error => {
-            console.log(error.code);
+            this.postsTotal = 0;
           });
       }
     });
-    // if (this.route.routeConfig.path === 'me') {
-    //   this.userService.getUserByEmail(JSON.parse(localStorage.getItem('loggedUserEmail')))
-    //     .then( user => {
-    //       console.log('dataFromGetByMail', user);
-    //       this.userFirstName = user.firstName;
-    //       this.userLastName = user.lastName;
-    //       this.userEmail = user.email;
-    //       this.userKey = user.key;
-    //       debugger;
-    //       this.postService.getPostsLengthByKey(user.key)
-    //         .then( arg => {
-    //           console.log('arg', arg);
-    //           this.postsTotal = arg;
-    //         });
-    //     });
-    // } else {
-    //   debugger;
-    //   this.userService.getUserByKey(JSON.parse(localStorage.getItem('currUserKey')))
-    //     .then((data) => {
-    //       console.log('data', data);
-    //     });
-    // }
 
 
   }
