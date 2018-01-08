@@ -7,6 +7,7 @@ import {AngularFireDatabase} from 'angularfire2/database';
 export class FollowService implements OnInit {
   followed;
   followList;
+  followersArray = [];
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private database: AngularFireDatabase) { }
@@ -27,13 +28,19 @@ export class FollowService implements OnInit {
   }
   unfollow (params) {
     this.followed = false;
-    console.log(params);
+    console.log(params.id);
     this.userService.getUserByKey(params.id)
       .then(followedUser => {
         const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
         this.followList = this.database.list(`follows/${userId}/${followedUser.key}`);
         console.log(this.followList);
         this.followList.remove();
+        for (let i = 0; i < this.followersArray.length; i++) {
+          if (this.followersArray[i].key === followedUser.key) {
+            this.followersArray[i].splice(i, 1);
+          }
+        }
+        console.log(this.followersArray);
       })
       .catch( (error) => {
         console.log(error.code);
@@ -59,5 +66,21 @@ export class FollowService implements OnInit {
       .catch( (error) => {
         console.log(error.code);
       });
+  }
+  getFollowersByKey(key: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.database.list('follows').snapshotChanges().map(actions => {
+        console.log('actions', actions);
+        return actions.map(action => ({key: action.key, ...action.payload.val()}));
+      }).subscribe(followsList => {
+        console.log('followsList', followsList);
+        for (let i = 0; i < followsList.length; i++) {
+          if (followsList[i]['key'] === key) {
+            resolve(followsList[i]);
+          }
+        }
+        reject('no posts');
+      });
+    });
   }
 }

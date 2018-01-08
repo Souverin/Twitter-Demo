@@ -1,2 +1,4 @@
 <p>Following:</p>
-<app-followed *ngFor="let i of followers"></app-followed>
+<app-followed
+  *ngFor="let follower of followService.followersArray"
+  [followInfo]="follower"></app-followed>

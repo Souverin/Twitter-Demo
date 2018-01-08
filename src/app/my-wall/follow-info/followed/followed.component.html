@@ -1,6 +1,6 @@
-<a routerLink="/user/:id">
+<a [routerLink]="['/user/', followInfo.key]">
   <p>
-    Follower Follower
+    {{ followInfo.firstName}} {{followInfo.lastName}}
   </p>
 </a>
 
