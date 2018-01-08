@@ -15,21 +15,30 @@ export class SbElseWallComponent implements OnInit {
               protected followService: FollowService) { }
 
   ngOnInit() {
-    console.log('SbElseWallOnInit');
+    // this.followService.followed = true;
     this.route.params.subscribe( params => {
-      console.log(params);
+      this.followService.isFollowed(params);
       this.userService.getUserByKey(params.id)
         .then(arg => {
           if (arg.email === JSON.parse(localStorage.getItem('loggedUserEmail'))) {
             this.router.navigate(['me']);
           }
-          console.log('arg.key', arg.key);
           localStorage.setItem('currUserKey', JSON.stringify(arg.key));
         })
         .catch( (error) => {
           console.log(error.code);
           this.router.navigate(['me']);
       });
+    });
+  }
+  onFollow () {
+    this.route.params.subscribe( params => {
+      this.followService.follow(params);
+    });
+  }
+  onUnfollow () {
+    this.route.params.subscribe( params => {
+      this.followService.unfollow(params);
     });
   }
 

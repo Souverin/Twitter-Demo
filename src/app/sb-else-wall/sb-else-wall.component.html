@@ -1,8 +1,8 @@
 <app-header></app-header>
 <div class="row">
   <app-brief-user-info class="col-sm-3">
-    <button *ngIf="!this.followService.followed" (click)="this.followService.follow()">Follow</button>
-    <button *ngIf="this.followService.followed" (click)="this.followService.unfollow()">Unfollow</button>
+    <button *ngIf="!this.followService.followed" (click)="onFollow()">Follow</button>
+    <button *ngIf="this.followService.followed" (click)="onUnfollow()">Unfollow</button>
   </app-brief-user-info>
   <app-wall class="col-sm-6"></app-wall>
 

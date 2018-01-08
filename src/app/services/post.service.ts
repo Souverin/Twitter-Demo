@@ -5,13 +5,17 @@ import {Observable} from 'rxjs/Observable';
 @Injectable()
 export class PostService {
 
-  constructor(private database: AngularFireDatabase) { }
+  constructor(private database: AngularFireDatabase) {
+  }
+  username;
   postList;
+  postsArray;
+
   getPostsByKey(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.database.list('posts').snapshotChanges().map(actions => {
         console.log('actions', actions);
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        return actions.map(action => ({key: action.key, ...action.payload.val()}));
       }).subscribe(postsList => {
         console.log('postsList', postsList);
         for (let i = 0; i < postsList.length; i++) {
@@ -23,12 +27,13 @@ export class PostService {
       });
     });
   }
+
   getPostsLengthByKey(key: string): Promise<any> {
 
     return new Promise((resolve, reject) => {
       this.database.list('posts').snapshotChanges().map(actions => {
         console.log('actions', actions);
-        return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+        return actions.map(action => ({key: action.key, ...action.payload.val()}));
       }).subscribe(postsList => {
         console.log('postsList', postsList);
         for (let i = 0; i < postsList.length; i++) {
@@ -46,19 +51,15 @@ export class PostService {
       });
     });
   }
+
   createPost(text: string) {
     console.log(text);
     this.postList = this.database.list(
       `posts/${JSON.parse(localStorage.getItem('loggedUserKey'))}`);
-    return Observable.of(this.postList.push({post: text, createdAt: Date()}));
-    // this.postList.valueChanges()
-    //   .subscribe(data => {
-    //   if (data) {
-    //     console.log('data', data);
-    //   }
-    // });
+    this.postList.push({post: text, createdAt: Date()});
+    this.username = JSON.parse(localStorage.getItem('loggedUserFirstName'))
+      + ' ' + JSON.parse(localStorage.getItem('loggedUserLastName'))
+
+    this.postsArray.unshift({post: text, createdAt: Date(), username: this.username});
   }
-  // addPost(post: Post): Observable<any> {
-  //   return Observable.of(this.db.list('posts').push(post));
-  // }
 }

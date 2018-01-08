@@ -21,6 +21,8 @@ export class AuthService {
         this.userService.getUserByEmail(email)
           .then( (user) => {
             localStorage.setItem('loggedUserKey', JSON.stringify(user.key));
+            localStorage.setItem('loggedUserFirstName', JSON.stringify(user.firstName));
+            localStorage.setItem('loggedUserLastName', JSON.stringify(user.lastName));
             this.router.navigate([ 'me' ]);
           });
       })
@@ -39,6 +41,8 @@ export class AuthService {
         this.userService.getUserByEmail(email)
           .then( (user) => {
             localStorage.setItem('loggedUserKey', JSON.stringify(user.key));
+            localStorage.setItem('loggedUserFirstName', JSON.stringify(user.firstName));
+            localStorage.setItem('loggedUserLastName', JSON.stringify(user.lastName));
             this.router.navigate([ 'me' ]);
           });
       })
