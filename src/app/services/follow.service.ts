@@ -7,7 +7,7 @@ import {AngularFireDatabase} from 'angularfire2/database';
 export class FollowService implements OnInit {
   followed;
   followList;
-  followersArray = [];
+  followedArray = [];
   constructor(private route: ActivatedRoute,
               private userService: UserService,
               private database: AngularFireDatabase) { }
@@ -32,15 +32,14 @@ export class FollowService implements OnInit {
     this.userService.getUserByKey(params.id)
       .then(followedUser => {
         const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-        this.followList = this.database.list(`follows/${userId}/${followedUser.key}`);
-        console.log(this.followList);
+        this.followList = this.database.object(`follows/${userId}/${followedUser.key}`);
         this.followList.remove();
-        for (let i = 0; i < this.followersArray.length; i++) {
-          if (this.followersArray[i].key === followedUser.key) {
-            this.followersArray[i].splice(i, 1);
+        for (let i = 0; i < this.followedArray.length; i++) {
+          if (this.followedArray[i].key === followedUser.key) {
+            this.followedArray[i].splice(i, 1);
           }
         }
-        console.log(this.followersArray);
+        console.log(this.followedArray);
       })
       .catch( (error) => {
         console.log(error.code);
@@ -50,7 +49,7 @@ export class FollowService implements OnInit {
     this.userService.getUserByKey(params.id)
       .then(followedUser => {
         const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-        this.followList = this.database.list(`follows`)
+        this.followList = this.database.list(`follows`);
         this.followList.snapshotChanges().map(actions => {
           return actions.map(action => ({ key: action.key, ...action.payload.val() }));
         }).subscribe(items => {
@@ -67,18 +66,24 @@ export class FollowService implements OnInit {
         console.log(error.code);
       });
   }
-  getFollowersByKey(key: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.database.list('follows').snapshotChanges().map(actions => {
+  getFollowed() {
+      return this.database.list('follows').snapshotChanges().map(actions => {
         return actions.map(action => ({key: action.key, ...action.payload.val()}));
-      }).subscribe(followsList => {
-        for (let i = 0; i < followsList.length; i++) {
-          if (followsList[i]['key'] === key) {
-            resolve(followsList[i]);
+      });
+
+  }
+  renderFollowedArrayByKey (followed, userKey) {
+    this.followedArray = [];
+    for (let i = 0; i < followed.length; i++) {
+      if (followed[i].key === userKey) {
+        for (const prop in followed[i]) {
+          if (prop !== 'key') {
+            this.followedArray
+              .push({firstName: followed[i][prop].followedUserFirstName,
+                lastName: followed[i][prop].followedUserLastName, key: prop});
           }
         }
-        reject('no posts');
-      });
-    });
+      }
+    }
   }
 }

@@ -15,7 +15,6 @@ export class SbElseWallComponent implements OnInit {
               protected followService: FollowService) { }
 
   ngOnInit() {
-    // this.followService.followed = true;
     this.route.params.subscribe( params => {
       this.followService.isFollowed(params);
       this.userService.getUserByKey(params.id)
