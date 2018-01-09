@@ -19,13 +19,18 @@ export class AuthService {
       .then( () => {
         localStorage.setItem('successfulLog', JSON.stringify(true));
         localStorage.setItem('loggedUserEmail', JSON.stringify(email));
-        this.userService.getUserByEmail(email)
-          .then( (user) => {
-            localStorage.setItem('loggedUserKey', JSON.stringify(user.key));
-            localStorage.setItem('loggedUserFirstName', JSON.stringify(user.firstName));
-            localStorage.setItem('loggedUserLastName', JSON.stringify(user.lastName));
-            this.router.navigate([ 'me' ]);
-          });
+        this.userService.getUserList().subscribe(userList => {
+          for ( let i = 0; i < userList.length; i++) {
+            if (userList[i]['email'] === email) {
+              {
+                localStorage.setItem('loggedUserKey', JSON.stringify(userList[i].key));
+                localStorage.setItem('loggedUserFirstName', JSON.stringify(userList[i].firstName));
+                localStorage.setItem('loggedUserLastName', JSON.stringify(userList[i].lastName));
+                this.router.navigate([ 'me' ]);
+              }
+            }
+          }
+        });
       })
       .catch((error) => {
         this.signInErrorMessage = error.message;
@@ -39,13 +44,18 @@ export class AuthService {
         this.usersList = this.database.list('users');
         this.usersList.push({email: email, firstName: firstName, lastName: lastName});
         localStorage.setItem('loggedUserEmail', JSON.stringify(email));
-        this.userService.getUserByEmail(email)
-          .then( (user) => {
-            localStorage.setItem('loggedUserKey', JSON.stringify(user.key));
-            localStorage.setItem('loggedUserFirstName', JSON.stringify(user.firstName));
-            localStorage.setItem('loggedUserLastName', JSON.stringify(user.lastName));
-            this.router.navigate([ 'me' ]);
-          });
+        this.userService.getUserList().subscribe(userList => {
+          for ( let i = 0; i < userList.length; i++) {
+            if (userList[i]['email'] === email) {
+              {
+                localStorage.setItem('loggedUserKey', JSON.stringify(userList[i].key));
+                localStorage.setItem('loggedUserFirstName', JSON.stringify(userList[i].firstName));
+                localStorage.setItem('loggedUserLastName', JSON.stringify(userList[i].lastName));
+                this.router.navigate([ 'me' ]);
+              }
+            }
+          }
+        });
       })
       .catch(function (error) {
         this.signUpErrorMessage = error.message;

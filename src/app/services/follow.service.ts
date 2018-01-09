@@ -16,53 +16,66 @@ export class FollowService implements OnInit {
   follow (params) {
     this.followed = true;
       console.log(params);
-      this.userService.getUserByKey(params.id)
-        .then(followedUser => {
-          const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-          this.followList = this.database.object(`follows/${userId}/${followedUser.key}`);
-          this.followList.set({followedUserFirstName: followedUser.firstName, followedUserLastName: followedUser.lastName});
-        })
-        .catch( (error) => {
+      this.userService.getUserList()
+        .subscribe(userList => {
+          console.log('userList', userList);
+          for ( let i = 0; i < userList.length; i++) {
+            if (userList[i]['key'] === params.id) {
+              const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
+              this.followList = this.database.object(`follows/${userId}/${userList[i].key}`);
+              this.followList.set({followedUserFirstName: userList[i].firstName, followedUserLastName: userList[i].lastName});
+            }
+          }
+        }, (error) => {
           console.log(error.code);
         });
   }
   unfollow (params) {
     this.followed = false;
     console.log(params.id);
-    this.userService.getUserByKey(params.id)
-      .then(followedUser => {
-        const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-        this.followList = this.database.object(`follows/${userId}/${followedUser.key}`);
-        this.followList.remove();
-        for (let i = 0; i < this.followedArray.length; i++) {
-          if (this.followedArray[i].key === followedUser.key) {
-            this.followedArray[i].splice(i, 1);
+    this.userService.getUserList()
+      .subscribe(userList => {
+        console.log('userList', userList);
+        for ( let i = 0; i < userList.length; i++) {
+          if (userList[i]['key'] === params.id) {
+            const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
+            this.followList = this.database.object(`follows/${userId}/${userList[i].key}`);
+            this.followList.remove();
+            for (let j = 0; j < this.followedArray.length; j++) {
+              if (this.followedArray[j].key === userList[i].key) {
+                this.followedArray[j].splice(i, 1);
+              }
+            }
+            console.log(this.followedArray);
           }
         }
-        console.log(this.followedArray);
-      })
-      .catch( (error) => {
+        // reject('no user');
+      }, (error) => {
         console.log(error.code);
       });
   }
   isFollowed (params) {
-    this.userService.getUserByKey(params.id)
-      .then(followedUser => {
-        const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-        this.followList = this.database.list(`follows`);
-        this.followList.snapshotChanges().map(actions => {
-          return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-        }).subscribe(items => {
-          console.log('items', items);
-          for (let i = 0; i < items.length; i++) {
-            if (items[i].key === userId) {
-              this.followed = items[i].hasOwnProperty(followedUser.key);
-            }
+    this.userService.getUserList()
+      .subscribe(userList => {
+        console.log('userList', userList);
+        for ( let i = 0; i < userList.length; i++) {
+          if (userList[i]['key'] === params.id) {
+            const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
+            this.followList = this.database.list(`follows`);
+            this.followList.snapshotChanges().map(actions => {
+              return actions.map(action => ({ key: action.key, ...action.payload.val() }));
+            }).subscribe(items => {
+              console.log('items', items);
+              for (let j = 0; j < items.length; j++) {
+                if (items[j].key === userId) {
+                  this.followed = items[j].hasOwnProperty(userList[i].key);
+                }
+              }
+              return items.map(item => item.key);
+            });
           }
-          return items.map(item => item.key);
-        });
-      })
-      .catch( (error) => {
+        }
+      }, (error) => {
         console.log(error.code);
       });
   }

@@ -17,17 +17,20 @@ export class SbElseWallComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe( params => {
       this.followService.isFollowed(params);
-      this.userService.getUserByKey(params.id)
-        .then(arg => {
-          if (arg.email === JSON.parse(localStorage.getItem('loggedUserEmail'))) {
-            this.router.navigate(['me']);
+      this.userService.getUserList()
+        .subscribe(userList => {
+          for ( let i = 0; i < userList.length; i++) {
+            if (userList[i]['key'] === params.id) {
+              if (userList[i].email === JSON.parse(localStorage.getItem('loggedUserEmail'))) {
+                this.router.navigate(['me']);
+              }
+              localStorage.setItem('currUserKey', JSON.stringify(userList[i].key));
+            }
           }
-          localStorage.setItem('currUserKey', JSON.stringify(arg.key));
-        })
-        .catch( (error) => {
+        }, (error) => {
           console.log(error.code);
           this.router.navigate(['me']);
-      });
+        });
     });
   }
   onFollow () {

@@ -19,21 +19,36 @@ export class WallComponent implements OnInit {
     this.route.params.subscribe(params => {
         this.key = this.route.routeConfig.path === 'me' ?
           JSON.parse(localStorage.getItem('loggedUserKey')) : params.id;
-        this.postService.getPostsByKey(this.key)
-          .then(posts => {
-            this.userService.getUserByKey(this.key)
-              .then( user => {
-                for (const prop in posts) {
-                  if (prop !== 'key') {
-                    posts[prop].username = user.firstName + ' ' + user.lastName;
-                    this.postService.postsArray.unshift(posts[prop]);
-                  }
-                }
-              });
-          })
-          .catch( error => {
+        this.postService.getPosts()
+          .subscribe(postsList => {
+            for (let i = 0; i < postsList.length; i++) {
+              if (postsList[i]['key'] === this.key) {
+                this.userService.getUserList()
+                  .subscribe(userList => {
+                    console.log('userList', userList);
+                    for ( let j = 0; j < userList.length; j++) {
+                      if (userList[j]['key'] === this.key) {
+                        {
+                          for (const prop in postsList[i]) {
+                            if (prop !== 'key') {
+                              postsList[i][prop].username = userList[j].firstName + ' ' + userList[j].lastName;
+                              this.postService.postsArray.unshift(postsList[i][prop]);
+                            }
+                          }
+                        }
+                      }
+                    }
+                    // reject('no user');
+                  }, error => {
+                    console.log(error.message);
+                  });
+              }
+            }
+            // reject('no posts');
+          }, error => {
             this.postService.noPosts = true;
-      });
+            console.log(error.message);
+          });
     });
   }
 

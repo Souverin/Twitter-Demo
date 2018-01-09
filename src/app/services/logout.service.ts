@@ -5,8 +5,8 @@ export class LogoutService {
 
   constructor() { }
   logout() {
-    localStorage.clear();
     localStorage.setItem('successfulLog', JSON.stringify(false));
+    localStorage.clear();
     console.log('successful logout!');
   }
 }
