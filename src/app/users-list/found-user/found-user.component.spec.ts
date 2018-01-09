@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FoundListComponent } from './found-list.component';
+import { FoundListComponent } from './found-user.component';
 
 describe('FoundListComponent', () => {
   let component: FoundListComponent;

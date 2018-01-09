@@ -19,8 +19,8 @@ export class FollowService implements OnInit {
       this.userService.getUserByKey(params.id)
         .then(followedUser => {
           const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-          this.followList = this.database.list(`follows/${userId}/${followedUser.key}`)
-          this.followList.push({firstName: followedUser.firstName, lastName: followedUser.lastName});
+          this.followList = this.database.object(`follows/${userId}/${followedUser.key}`);
+          this.followList.set({followedUserFirstName: followedUser.firstName, followedUserLastName: followedUser.lastName});
         })
         .catch( (error) => {
           console.log(error.code);
@@ -70,10 +70,8 @@ export class FollowService implements OnInit {
   getFollowersByKey(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.database.list('follows').snapshotChanges().map(actions => {
-        console.log('actions', actions);
         return actions.map(action => ({key: action.key, ...action.payload.val()}));
       }).subscribe(followsList => {
-        console.log('followsList', followsList);
         for (let i = 0; i < followsList.length; i++) {
           if (followsList[i]['key'] === key) {
             resolve(followsList[i]);

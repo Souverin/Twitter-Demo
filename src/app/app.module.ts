@@ -24,7 +24,7 @@ import { PostComponent } from './shared/components/wall/post/post.component';
 import { FollowInfoComponent } from './my-wall/follow-info/follow-info.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { SearchFieldComponent } from './users-list/search-field/search-field.component';
-import { FoundListComponent } from './users-list/found-list/found-list.component';
+import { FoundUserComponent } from './users-list/found-user/found-user.component';
 import { SbElseWallComponent } from './sb-else-wall/sb-else-wall.component';
 import { HeaderComponent } from './header/header.component';
 
@@ -59,7 +59,7 @@ const appRoutes: Routes = [
     FollowInfoComponent,
     UsersListComponent,
     SearchFieldComponent,
-    FoundListComponent,
+    FoundUserComponent,
     SbElseWallComponent,
     HeaderComponent,
     FollowedComponent,

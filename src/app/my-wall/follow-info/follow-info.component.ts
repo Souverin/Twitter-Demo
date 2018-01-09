@@ -15,7 +15,7 @@ export class FollowInfoComponent implements OnInit {
     const userKey = JSON.parse(localStorage.getItem('loggedUserKey'));
     this.followService.getFollowersByKey(userKey)
       .then( followers => {
-        ;
+        this.followService.followersArray = [];
         for (const prop in followers) {
           if (prop !== 'key') {
             for (const prop1 in followers[prop]) {
@@ -25,7 +25,6 @@ export class FollowInfoComponent implements OnInit {
             }
           }
         }
-        console.log('followersArray', this.followService.followersArray);
       })
       .catch( error => {
         console.log('noFollowers');

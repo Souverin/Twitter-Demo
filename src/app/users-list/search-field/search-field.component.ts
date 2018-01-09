@@ -1,34 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
-import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'app-search-field',
   templateUrl: './search-field.component.html',
   styleUrls: ['./search-field.component.css']
 })
-export class SearchFieldComponent implements OnInit {
+export class SearchFieldComponent implements OnInit, OnDestroy{
   searchForm: FormGroup;
-  users;
-  startAt = new Subject();
-  endAt = new Subject();
 
-  constructor(private searchService: SearchService) { }
+  constructor(protected searchService: SearchService) { }
 
   ngOnInit() {
-    this.searchService.getUser(this.startAt, this.endAt).valueChanges()
-      .subscribe( users => this.users = users);
     this.searchForm = new FormGroup({
       'search': new FormControl(null)
     });
-    this.searchForm.valueChanges.subscribe( (arg) => {
-      console.log(arg.search);
+    this.searchForm.valueChanges.subscribe( text => {
+      console.log(text);
+      this.searchService.getUsers(text.search, text.search + '\uf8ff').snapshotChanges().map(actions => {
+        return actions.map(action => ({key: action.key, ...action.payload.val()}));
+      }).subscribe( users => {
+        let loggedUserIndex;
+        let loggedUserInList = false;
+        for ( let i = 0; i < users.length; i++) {
+          if (users[i].email
+            === JSON.parse(localStorage.getItem('loggedUserEmail'))) {
+            loggedUserIndex = i;
+            loggedUserInList = true;
+          }
+        }
+        this.searchService.users = users;
+        if (loggedUserInList) {
+          this.searchService.users.splice(loggedUserIndex, 1);
+        }
+      });
     });
   }
-  search($event) {
-    let q = $event.target.value;
-    this.startAt.next(q);
-    this.endAt.next(q + '\uf8ff');
+  ngOnDestroy () {
+    this.searchService.users = [];
   }
 }

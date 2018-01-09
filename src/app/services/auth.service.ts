@@ -7,7 +7,8 @@ import {UserService} from './user.service';
 @Injectable()
 export class AuthService {
   posts;
-  postsList;
+  signInErrorMessage;
+  signUpErrorMessage;
   usersList;
   constructor(private router: Router,
                protected userService: UserService,
@@ -27,8 +28,8 @@ export class AuthService {
           });
       })
       .catch((error) => {
-        const errorMessage = error.message;
-        alert( errorMessage);
+        this.signInErrorMessage = error.message;
+        alert( error.message); // in template
       });
   }
   signUp(email: string, password: string, firstName: string, lastName: string) {
@@ -47,14 +48,8 @@ export class AuthService {
           });
       })
       .catch(function (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/operation-not-allowed') {
-          alert('Operation is not allowed');
-        } else {
-          console.log(errorMessage);
-        }
-        console.log(error);
+        this.signUpErrorMessage = error.message;
+        alert(this.signUpErrorMessage); // in template
       });
   }
 }

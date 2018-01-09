@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
+import {patternValidator} from '../shared/pattern-validator';
 
 @Component({
   selector: 'app-register-form',
@@ -22,11 +23,14 @@ export class RegisterFormComponent implements OnInit {
         Validators.minLength(6)]),
       'email': new FormControl(null,
         [Validators.required, Validators.email]),
-      'firstName': new FormControl(null, [Validators.required]),
-      'lastName': new FormControl(null, [Validators.required])
+      'firstName': new FormControl(null, [Validators.required, patternValidator(/^[A-Z]/)]),
+      'lastName': new FormControl(null, [Validators.required, patternValidator(/^[A-Z]/)])
     });
   }
     onRegister() {
+      console.log(this.firstNameNotUppercase());
+      console.log(this.lastNameNotUppercase());
+      debugger;
       this.registered = true;
       if (!this.registerForm.valid) {
         return;
@@ -62,5 +66,11 @@ export class RegisterFormComponent implements OnInit {
     }
     noLastName() {
       return !this.lastName['value'] && (this.lastName.touched || this.registered);
+    }
+    firstNameNotUppercase() {
+      return this.firstName.errors != null && this.firstName.errors.patternInvalid && (this.lastName.touched || this.registered);
+    }
+    lastNameNotUppercase() {
+      return this.lastName.errors != null && this.lastName.errors.patternInvalid && (this.lastName.touched || this.registered);
     }
 }

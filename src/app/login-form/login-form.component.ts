@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { patternValidator} from '../shared/pattern-validator';
-import {AngularFireDatabase} from 'angularfire2/database';
 
 @Component({
   selector: 'app-login-form',
@@ -15,7 +13,7 @@ import {AngularFireDatabase} from 'angularfire2/database';
 export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
   logged;
-  constructor (private authService: AuthService) {}
+  constructor (protected authService: AuthService) {}
   ngOnInit() {
     this.loginForm = new FormGroup({
       'password': new FormControl(null,
@@ -24,8 +22,8 @@ export class LoginFormComponent implements OnInit {
           Validators.minLength(6)]),
       'email': new FormControl(null,
         [Validators.required,
-        Validators.email,
-          patternValidator(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+        Validators.email])
+          // patternValidator(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
     });
   }
   onLogin() {

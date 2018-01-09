@@ -24,42 +24,31 @@ export class BriefUserInfoComponent implements OnInit {
       if (this.route.routeConfig.path === 'me') {
         this.userService.getUserByEmail(JSON.parse(localStorage.getItem('loggedUserEmail')))
           .then( user => {
-            console.log('dataFromGetByMail', user);
-            this.userFirstName = user.firstName;
-            this.userLastName = user.lastName;
-            this.userEmail = user.email;
-            this.userKey = user.key;
-            this.postService.getPostsLengthByKey(user.key)
-              .then( posts => {
-                console.log('arg', posts);
-                this.postsTotal = posts;
-              })
-              .catch(error => {
-                this.postsTotal = 0;
-              });
+            this.renderBriefUserInfo(user);
           });
       } else {
-        console.log('params', params);
         this.userService.getUserByKey(params.id)
           .then((user) => {
-            console.log('data', user);
-            this.userFirstName = user.firstName;
-            this.userLastName = user.lastName;
-            this.userEmail = user.email;
-            this.userKey = user.key;
-            this.postService.getPostsLengthByKey(user.key)
-              .then( posts => {
-                console.log('arg', posts);
-                this.postsTotal = posts;
-              });
+            this.renderBriefUserInfo(user);
           })
           .catch( error => {
-            this.postsTotal = 0;
           });
       }
     });
-
-
+  }
+  renderBriefUserInfo (user) {
+    this.userFirstName = user.firstName;
+    this.userLastName = user.lastName;
+    this.userEmail = user.email;
+    this.userKey = user.key;
+    this.postService.getPostsLengthByKey(user.key)
+      .then( posts => {
+        this.postsTotal = posts;
+        this.postService.noPosts = false;
+      }, () => {
+        this.postsTotal = 0;
+        this.postService.noPosts = true;
+      });
   }
 
 }

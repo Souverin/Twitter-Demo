@@ -55,6 +55,10 @@
       *ngIf="this.noFirstName()"
       class="help-block"
     >First Name is Required!</span>
+    <span
+      *ngIf="this.firstNameNotUppercase()"
+      class="help-block"
+    >First letter should be uppercase!</span>
     <div class="form-group">
       <label for="lastName">Last Name</label>
       <input
@@ -70,6 +74,13 @@
     *ngIf="this.noLastName()"
     class="help-block"
   >Last Name is Required!</span>
+  <span
+    *ngIf="this.lastNameNotUppercase()"
+    class="help-block"
+  >First letter should be uppercase!</span>
   <button class="btn btn-primary" type="submit">Create account</button>
+  <div *ngIf="this.authService.signUpErrorMessage">
+    {{ this.authService.signUpErrorMessage }}
+  </div>
 </form>
 </div>

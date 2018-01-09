@@ -22,8 +22,10 @@ export class UserService {
   getUserByKey(userKey: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.database.list('users').snapshotChanges().map(actions => {
+        console.log('actions', actions);
         return actions.map(action => ({ key: action.key, ...action.payload.val() }));
       }).subscribe(userList => {
+        console.log('userList', userList);
         for ( let i = 0; i < userList.length; i++) {
           if (userList[i]['key'] === userKey) {
             resolve(userList[i]);

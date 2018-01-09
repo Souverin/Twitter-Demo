@@ -1,0 +1,7 @@
+<a *ngFor="let user of searchService.users"
+  [routerLink] = "['/user/', user.key]">
+  <p>{{ user?.firstName }} {{ user?.lastName }}</p>
+</a>
+<div *ngIf="searchService.users?.length < 1">
+  No results
+</div>

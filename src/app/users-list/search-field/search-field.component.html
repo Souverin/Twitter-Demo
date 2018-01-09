@@ -1,15 +1,13 @@
 <form class="form-group"
-      [formGroup]="this.searchForm">
+      [formGroup]="searchForm">
     <input type="text"
            placeholder="search"
            class="form-control"
            id="search"
-           formControlName="search">
+           formControlName="search"
+    >
     <label for="search" class="glyphicon glyphicon-search" rel="tooltip" title="search"></label>
-    <input type="text" (keydown)="search($event)">
 
-    <div *ngFor="let user of users">
-      <p>{{ user?.lastName }}</p>
-      <p>{{ user?.firstName }}</p>
-    </div>
 </form>
+
+
