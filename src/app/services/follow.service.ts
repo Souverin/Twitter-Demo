@@ -35,7 +35,6 @@ export class FollowService implements OnInit {
     console.log(params.id);
     this.userService.getUserList()
       .subscribe(userList => {
-        console.log('userList', userList);
         for ( let i = 0; i < userList.length; i++) {
           if (userList[i]['key'] === params.id) {
             const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
@@ -57,15 +56,11 @@ export class FollowService implements OnInit {
   isFollowed (params) {
     this.userService.getUserList()
       .subscribe(userList => {
-        console.log('userList', userList);
         for ( let i = 0; i < userList.length; i++) {
           if (userList[i]['key'] === params.id) {
             const userId = JSON.parse(localStorage.getItem('loggedUserKey'));
-            this.followList = this.database.list(`follows`);
-            this.followList.snapshotChanges().map(actions => {
-              return actions.map(action => ({ key: action.key, ...action.payload.val() }));
-            }).subscribe(items => {
-              console.log('items', items);
+            this.getFollowedList()
+              .subscribe(items => {
               for (let j = 0; j < items.length; j++) {
                 if (items[j].key === userId) {
                   this.followed = items[j].hasOwnProperty(userList[i].key);
@@ -79,7 +74,7 @@ export class FollowService implements OnInit {
         console.log(error.code);
       });
   }
-  getFollowed() {
+  getFollowedList() {
       return this.database.list('follows').snapshotChanges().map(actions => {
         return actions.map(action => ({key: action.key, ...action.payload.val()}));
       });

@@ -7,9 +7,8 @@ import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
   styleUrls: ['./start-page.component.css']
 })
 export class StartPageComponent implements OnInit {
-  registrationFormOn;
-  loginFormOn;
-  constructor() {this.registrationFormOn = true; this.loginFormOn = false; }
+
+  constructor() { }
 
   ngOnInit() {
   }

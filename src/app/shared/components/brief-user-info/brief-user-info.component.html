@@ -6,9 +6,9 @@
          class="img-circle"
     >
     <span class="username">
-    {{userFirstName}} {{ userLastName }}
+    {{userService.userFirstName}} {{ userService.userLastName }}
     </span>
-    <div class="email">{{ userEmail }}</div>
-    <div>{{postsTotal}} posts total</div>
+    <div class="email">{{ userService.userEmail }}</div>
+    <div>{{postService.postsTotal}} posts total</div>
   <ng-content></ng-content>
 </div>

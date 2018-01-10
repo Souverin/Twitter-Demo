@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { AuthService } from '../services/auth.service';
-import { patternValidator} from '../shared/pattern-validator';
 
 @Component({
   selector: 'app-login-form',
@@ -23,7 +22,6 @@ export class LoginFormComponent implements OnInit {
       'email': new FormControl(null,
         [Validators.required,
         Validators.email])
-          // patternValidator(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
     });
   }
   onLogin() {

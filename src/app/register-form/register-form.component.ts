@@ -28,9 +28,6 @@ export class RegisterFormComponent implements OnInit {
     });
   }
     onRegister() {
-      console.log(this.firstNameNotUppercase());
-      console.log(this.lastNameNotUppercase());
-      debugger;
       this.registered = true;
       if (!this.registerForm.valid) {
         return;

@@ -17,49 +17,47 @@ export class AuthService {
     firebase.auth()
       .signInWithEmailAndPassword(email, password)
       .then( () => {
-        localStorage.setItem('successfulLog', JSON.stringify(true));
-        localStorage.setItem('loggedUserEmail', JSON.stringify(email));
         this.userService.getUserList().subscribe(userList => {
-          for ( let i = 0; i < userList.length; i++) {
-            if (userList[i]['email'] === email) {
-              {
-                localStorage.setItem('loggedUserKey', JSON.stringify(userList[i].key));
-                localStorage.setItem('loggedUserFirstName', JSON.stringify(userList[i].firstName));
-                localStorage.setItem('loggedUserLastName', JSON.stringify(userList[i].lastName));
-                this.router.navigate([ 'me' ]);
-              }
-            }
-          }
+          this.navigateToMeAfterSuccessfulLoginAndSetLocalStorage(email, userList);
         });
       })
       .catch((error) => {
+        console.log(error);
         this.signInErrorMessage = error.message;
-        alert( error.message); // in template
+        setTimeout(() => {
+          this.signInErrorMessage = '';
+        }, 5000);
       });
   }
   signUp(email: string, password: string, firstName: string, lastName: string) {
     firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(() => {
-        localStorage.setItem('successfulLog', JSON.stringify(true));
         this.usersList = this.database.list('users');
         this.usersList.push({email: email, firstName: firstName, lastName: lastName});
-        localStorage.setItem('loggedUserEmail', JSON.stringify(email));
         this.userService.getUserList().subscribe(userList => {
-          for ( let i = 0; i < userList.length; i++) {
-            if (userList[i]['email'] === email) {
-              {
-                localStorage.setItem('loggedUserKey', JSON.stringify(userList[i].key));
-                localStorage.setItem('loggedUserFirstName', JSON.stringify(userList[i].firstName));
-                localStorage.setItem('loggedUserLastName', JSON.stringify(userList[i].lastName));
-                this.router.navigate([ 'me' ]);
-              }
-            }
-          }
+        this.navigateToMeAfterSuccessfulLoginAndSetLocalStorage (email, userList);
         });
       })
       .catch(function (error) {
+        console.log(error);
         this.signUpErrorMessage = error.message;
-        alert(this.signUpErrorMessage); // in template
+        setTimeout(() => {
+          this.signUpErrorMessage = '';
+        }, 5000);
       });
+  }
+  navigateToMeAfterSuccessfulLoginAndSetLocalStorage (email, userList) {
+    for ( let i = 0; i < userList.length; i++) {
+      if (userList[i]['email'] === email) {
+        {
+          localStorage.setItem('successfulLog', JSON.stringify(true));
+          localStorage.setItem('loggedUserEmail', JSON.stringify(email));
+          localStorage.setItem('loggedUserKey', JSON.stringify(userList[i].key));
+          localStorage.setItem('loggedUserFirstName', JSON.stringify(userList[i].firstName));
+          localStorage.setItem('loggedUserLastName', JSON.stringify(userList[i].lastName));
+          this.router.navigate([ 'me' ]);
+        }
+      }
+    }
   }
 }

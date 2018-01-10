@@ -12,7 +12,7 @@ export class FollowInfoComponent implements OnInit {
 
   ngOnInit() {
     const userKey = JSON.parse(localStorage.getItem('loggedUserKey'));
-    this.followService.getFollowed()
+    this.followService.getFollowedList()
       .subscribe( followed => {
         this.followService.renderFollowedArrayByKey(followed, userKey);
       });

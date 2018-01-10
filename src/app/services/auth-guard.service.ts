@@ -12,7 +12,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   canActivate (route: ActivatedRouteSnapshot,
                state: RouterStateSnapshot): Observable<boolean> | boolean {
     if ( JSON.parse(localStorage.getItem('successfulLog')) ) { return true; }
-
     console.log('access denied');
     this.router.navigate(['login']);
     return false;

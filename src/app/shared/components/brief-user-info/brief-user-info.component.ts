@@ -9,13 +9,8 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./brief-user-info.component.css']
 })
 export class BriefUserInfoComponent implements OnInit {
-  userFirstName;
-  userLastName;
-  userEmail;
-  userKey;
-  postsTotal;
-  constructor(private userService: UserService,
-              private postService: PostService,
+  constructor(protected userService: UserService,
+              protected postService: PostService,
               private route: ActivatedRoute) {
   }
 
@@ -39,18 +34,18 @@ export class BriefUserInfoComponent implements OnInit {
                 this.renderBriefUserInfo(userList[i]);
               }
             }
-            // reject('no user');
           }, error => {
             console.log(error.message);
           });
       }
     });
   }
+  // circlular dependencies
   renderBriefUserInfo (user) {
-    this.userFirstName = user.firstName;
-    this.userLastName = user.lastName;
-    this.userEmail = user.email;
-    this.userKey = user.key;
+    this.userService.userFirstName = user.firstName;
+    this.userService.userLastName = user.lastName;
+    this.userService.userEmail = user.email;
+    this.userService.userKey = user.key;
     this.postService.getPosts()
       .subscribe(postsList => {
         let size = -1;
@@ -63,10 +58,9 @@ export class BriefUserInfoComponent implements OnInit {
               }
             }
           }
-          this.postsTotal = (size === -1) ? 0 : size;
+          this.postService.postsTotal = (size === -1) ? 0 : size;
           this.postService.noPosts = size === 0;
         }
       });
   }
-
 }
