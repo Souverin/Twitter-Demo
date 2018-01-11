@@ -1,0 +1,11 @@
+<div>
+  <ng-content></ng-content>
+  <p>
+    {{postInfo.username}}
+    on {{postInfo.createdAt | date: 'dd LLLL yyyy, аt HH:mm'}}
+  </p>
+  <p class="post">
+    {{postInfo.post}}
+  </p>
+</div>
+

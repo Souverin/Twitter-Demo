@@ -1,0 +1,6 @@
+<ng-content></ng-content>
+<p *ngIf="postService.noPosts">No posts</p>
+  <app-post *ngFor="let post of postService.postsArray"
+  [postInfo]="post"
+  >
+  </app-post>

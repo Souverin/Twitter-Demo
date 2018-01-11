@@ -1,3 +1,4 @@
-<p>
-  follow-info works!
-</p>
+<p>Following:</p>
+<app-followed
+  *ngFor="let follower of followService.followedArray"
+  [followInfo]="follower"></app-followed>

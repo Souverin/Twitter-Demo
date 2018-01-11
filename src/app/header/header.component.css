@@ -1,0 +1,11 @@
+a {
+  border-radius: 0px;
+}
+.logout {
+  float:right;
+}
+div {
+  background-color: whitesmoke;
+  height: 50px;
+  margin-bottom: 30px;
+}

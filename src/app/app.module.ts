@@ -12,7 +12,6 @@ import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import * as firebase from 'firebase';
 firebase.initializeApp(environment.firebase);
-
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { StartPageComponent } from './start-page/start-page.component';
@@ -20,25 +19,32 @@ import { RegisterFormComponent } from './register-form/register-form.component';
 import { MyWallComponent } from './my-wall/my-wall.component';
 import { BriefUserInfoComponent } from './shared/components/brief-user-info/brief-user-info.component';
 import { PostNewsFormComponent } from './my-wall/post-news-form/post-news-form.component';
-import { WallComponent } from './my-wall/wall/wall.component';
-import { PostComponent } from './my-wall/wall/post/post.component';
+import { WallComponent } from './shared/components/wall/wall.component';
+import { PostComponent } from './shared/components/wall/post/post.component';
 import { FollowInfoComponent } from './my-wall/follow-info/follow-info.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { SearchFieldComponent } from './users-list/search-field/search-field.component';
-import { FoundListComponent } from './users-list/found-list/found-list.component';
+import { FoundUserComponent } from './users-list/found-user/found-user.component';
 import { SbElseWallComponent } from './sb-else-wall/sb-else-wall.component';
 import { HeaderComponent } from './header/header.component';
+
 import {AuthService} from './services/auth.service';
-import {DisplayService} from './services/display.service';
+import { FollowedComponent } from './my-wall/follow-info/followed/followed.component';
+import {PostService} from './services/post.service';
+import {UserService} from './services/user.service';
+import {FollowService} from './services/follow.service';
+import {LogoutService} from './services/logout.service';
+import {SearchService} from './services/search.service';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  { path: '', redirectTo:
+      JSON.parse(localStorage.getItem('successfulLogout')) ? 'login' : 'me', pathMatch: 'full'},
   { path: 'login', component: LoginFormComponent },
   { path: 'register', component: RegisterFormComponent},
   { path: 'me', component: MyWallComponent, canActivate: [AuthGuard]},
   { path: 'users', component: UsersListComponent, canActivate: [AuthGuard]},
-  { path: 'user/userid', component: SbElseWallComponent, canActivateChild: [AuthGuard]}
-]
+  { path: 'user/:id', component: SbElseWallComponent, canActivate: [AuthGuard]}
+];
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,9 +59,10 @@ const appRoutes: Routes = [
     FollowInfoComponent,
     UsersListComponent,
     SearchFieldComponent,
-    FoundListComponent,
+    FoundUserComponent,
     SbElseWallComponent,
     HeaderComponent,
+    FollowedComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +73,7 @@ const appRoutes: Routes = [
     AngularFireDatabaseModule,
     AngularFireModule
   ],
-  providers: [AuthGuard, AuthService, DisplayService],
+  providers: [AuthGuard, AuthService, PostService, UserService, FollowService, LogoutService, SearchService],
   bootstrap: [AppComponent]
 
 })

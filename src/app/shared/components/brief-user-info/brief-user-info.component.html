@@ -1,3 +1,14 @@
-<p>
-  brief-user-info works!
-</p>
+<div class="clearfix">
+    <img src="https://www.gamersroot.com/images/userpics/nouserpic.gif"
+         alt="userpic"
+         width="100px"
+         height="100px"
+         class="img-circle"
+    >
+    <span class="username">
+    {{userService.userFirstName}} {{ userService.userLastName }}
+    </span>
+    <div class="email">{{ userService.userEmail }}</div>
+    <div>{{postService.postsTotal}} posts total</div>
+  <ng-content></ng-content>
+</div>

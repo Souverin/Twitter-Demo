@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-// import {FormControl, FormGroup} from '@angular/forms';
-// import {  AngularFireDatabase } from 'angularfire2/database';
-// import * as firebase from 'firebase';
-// import { Router } from '@angular/router';
-// import { UserIdInfo } from '../shared/userid-info';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
+import {patternValidator} from '../shared/pattern-validator';
 
 @Component({
   selector: 'app-register-form',
@@ -13,71 +10,69 @@ import {AuthService} from '../services/auth.service';
 })
 
 
-export class RegisterFormComponent implements OnInit {
+export class RegisterFormComponent implements OnInit, OnDestroy {
+  registerForm: FormGroup;
+  registered;
   constructor(protected authService: AuthService) {
-    // const afList = db.list('items');
-    // afList.push({name: 'item'});
-    // const listObservable = afList.snapshotChanges();
-    // listObservable.subscribe();
-    // const relative = db.object(this.basePath).valueChanges();
   }
 
   ngOnInit() {
-    this.authService.initializeNewRegisterFormGroup();
-    // this.registerForm = new FormGroup({
-    //   'password': new FormControl(null),
-    //   'email': new FormControl(null),
-    //   'firstName': new FormControl(null),
-    //   'lastName': new FormControl(null)
-    // });
-    // onSubmit() {
-    //   console.log(this.email, this.password);
-    //   firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-    //     .then(() => {
-    //       this.router.navigate(['me']);
-    //       this.authService.successfulLog = true;
-    //       this.afList = this.db.list('users');
-    //       this.afList.push({firstName: this.firstName, lastName: this.lastName});
-    //       console.log(this.firstName, this.lastName, this.afList);
-    //   })
-    //     // .then(() => {
-    //     //   this.createuserIdInfo(this.getUserInfo);
-    //     // })
-    //     .catch(function(error) {
-    //       const errorCode = error.code;
-    //       const errorMessage = error.message;
-    //       if (errorCode === 'auth/operation-not-allowed') {
-    //         alert('Operation is not allowed');
-    //       } else {
-    //         alert(errorMessage);
-    //       }
-    //       console.log(error);
-    //     });
-    // }
-    // emailIsInvalid() {
-    //   return this.email != null && !this.email.valid && this.email.touched;
-    // }
-    // passwordIsTooBig ( ) {
-    //   return this.password !== null && this.password.length > 20;
-    // }
-    // get email() {
-    //   return this.registerForm.get('email').value;
-    // }
-    // get password() {
-    //   return this.registerForm.get('password').value;
-    // }
-    // get firstName() {
-    //   return this.registerForm.get('firstName').value;
-    // }
-    // get lastName() {
-    //   return this.registerForm.get('lastName').value;
-    // }
-    // get getUserInfo() {
-    //   return {
-    //     email: this.email,
-    //     lastName: this.lastName,
-    //     firstName: this.firstName
-    //   };
-    // }
+    this.registerForm = new FormGroup({
+      'password': new FormControl(null, [Validators.required,
+        Validators.maxLength(20),
+        Validators.minLength(6)]),
+      'email': new FormControl(null,
+        [Validators.required, Validators.email]),
+      'firstName': new FormControl(null, [Validators.required, patternValidator(/^[A-Z]/)]),
+      'lastName': new FormControl(null, [Validators.required, patternValidator(/^[A-Z]/)])
+    });
   }
+    onRegister() {
+      this.registered = true;
+      if (!this.registerForm.valid) {
+        return;
+      }
+      this.authService.signUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value);
+    }
+    get email() {
+      return this.registerForm.get('email');
+    }
+    get password() {
+      return this.registerForm.get('password');
+    }
+    get firstName() {
+      return this.registerForm.get('firstName');
+    }
+    get lastName() {
+      return this.registerForm.get('lastName');
+    }
+    emailIsInvalid() {
+      return this.email != null && !this.email.valid && (this.email.touched || this.registered);
+    }
+    noPassword() {
+      return !this.password['value'] && (this.password.touched || this.registered);
+    }
+    tooSmallPassword() {
+      return this.password.errors != null && this.password.errors['minlength'] && (this.password.touched || this.registered);
+    }
+    tooBigPassword() {
+      return this.password.errors != null && this.password.errors['maxlength'] && (this.password.touched || this.registered);
+    }
+    noFirstName() {
+      return !this.firstName['value'] && (this.firstName.touched || this.registered);
+    }
+    noLastName() {
+      return !this.lastName['value'] && (this.lastName.touched || this.registered);
+    }
+    firstNameNotUppercase() {
+      return this.firstName.errors != null && this.firstName.errors.patternInvalid && (this.lastName.touched || this.registered);
+    }
+    lastNameNotUppercase() {
+      return this.lastName.errors != null && this.lastName.errors.patternInvalid && (this.lastName.touched || this.registered);
+    }
+    ngOnDestroy() {
+    if (this.authService.signUpSubscription) {
+      this.authService.signUpSubscription.unsubscribe();
+    }
+}
 }

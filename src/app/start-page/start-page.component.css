@@ -1,0 +1,19 @@
+.col-5 {
+  margin-top: 150px;
+}
+a{
+  font-size: 20px;
+  color: #443b3b;
+  padding: 30px 100px;
+  display: table-cell;
+  border: 2px solid #77cae4;
+  border-bottom-width: 5px;
+}
+.active, a:hover,  a:focus{
+  background-color: #2A74BF;
+  text-decoration: none;
+  color: white;
+}
+[_ngcontent-c2] {
+  margin-top:70px;
+}

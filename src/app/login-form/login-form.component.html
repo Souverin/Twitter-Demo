@@ -1,5 +1,7 @@
+<div class="row justify-content-center">
 <app-start-page></app-start-page>
 <form [formGroup]="loginForm"
+      class="col-sm-offset-4 col-sm-5 div_centered"
       (ngSubmit)="onLogin()">
   <div class="form-group">
     <label for="email">Enter Email</label>
@@ -27,16 +29,20 @@
         >
     </div>
     <span
-      *ngIf="NoPassword()"
+      *ngIf="noPassword()"
       class="help-block"
     >Enter the password!</span>
     <span
-      *ngIf="TooSmallPassword()"
+      *ngIf="tooSmallPassword()"
       class="help-block"
     >The password should contain more than 6 symbols!</span>
     <span
-      *ngIf="TooBigPassword()"
+      *ngIf="tooBigPassword()"
       class="help-block"
     >The password should contain less than 20 symbols!</span>
   <button class="btn btn-primary" type="submit">Login</button>
+  <div *ngIf="this.authService.signInErrorMessage">
+    {{ this.authService.signInErrorMessage }}
+  </div>
 </form>
+</div>

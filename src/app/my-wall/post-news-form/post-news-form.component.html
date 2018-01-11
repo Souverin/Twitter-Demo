@@ -1,3 +1,15 @@
-<p>
-  post-news-form works!
-</p>
+<form [formGroup] = "postForm"
+      (ngSubmit)="onPost()"
+>
+  <textarea
+    placeholder = "What's new?"
+    formControlName= "textarea"
+  ></textarea>
+  <span
+    *ngIf="this.tooManySymbols()"
+    class="help-block"
+  >The post shouldn't contain more than 280 symbols</span>
+    <button class="btn btn-primary" type="submit">Post</button>
+
+
+</form>
