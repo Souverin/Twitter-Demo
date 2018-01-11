@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {AuthService} from '../services/auth.service';
 import {patternValidator} from '../shared/pattern-validator';
@@ -10,7 +10,7 @@ import {patternValidator} from '../shared/pattern-validator';
 })
 
 
-export class RegisterFormComponent implements OnInit {
+export class RegisterFormComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   registered;
   constructor(protected authService: AuthService) {
@@ -32,7 +32,7 @@ export class RegisterFormComponent implements OnInit {
       if (!this.registerForm.valid) {
         return;
       }
-      this.authService.signUp (this.email.value, this.password.value, this.firstName.value, this.lastName.value);
+      this.authService.signUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value);
     }
     get email() {
       return this.registerForm.get('email');
@@ -70,4 +70,9 @@ export class RegisterFormComponent implements OnInit {
     lastNameNotUppercase() {
       return this.lastName.errors != null && this.lastName.errors.patternInvalid && (this.lastName.touched || this.registered);
     }
+    ngOnDestroy() {
+    if (this.authService.signUpSubscription) {
+      this.authService.signUpSubscription.unsubscribe();
+    }
+}
 }

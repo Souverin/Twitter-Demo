@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AngularFireDatabase} from 'angularfire2/database';
 import {DatePipe} from '@angular/common';
 import {Router} from '@angular/router';
-import {PostService} from '../../../../services/post.service';
+import {PostService} from '../../services/post.service';
 
 @Component({
   selector: 'app-post-news-form',
@@ -33,7 +33,7 @@ export class PostNewsFormComponent implements OnInit {
   get textarea () {
     return this.postForm.get('textarea');
   }
-  tooMuchSymbols() {
+  tooManySymbols() {
     return this.textarea.errors != null && this.textarea.errors['maxlength'] && (this.textarea.touched || this.clicked);
   }
 }

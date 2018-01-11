@@ -8,7 +8,7 @@ import {UserService} from '../../services/user.service';
   templateUrl: './search-field.component.html',
   styleUrls: ['./search-field.component.css']
 })
-export class SearchFieldComponent implements OnInit, OnDestroy{
+export class SearchFieldComponent implements OnInit, OnDestroy {
   searchForm: FormGroup;
   constructor(protected searchService: SearchService,
               protected userService: UserService) { }

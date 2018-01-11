@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {AngularFireDatabase} from 'angularfire2/database';
-import {Observable} from 'rxjs/Observable';
 import {UserService} from './user.service';
+
+import 'rxjs/add/operator/do';
 
 @Injectable()
 export class PostService {
@@ -9,6 +10,7 @@ export class PostService {
   constructor(private database: AngularFireDatabase,
               private userService: UserService) {
   }
+  posts;
   postList;
   postsArray;
   noPosts = false;
@@ -27,26 +29,27 @@ export class PostService {
     }
   }
   renderPostsByKey(postsList, key) {
+    console.log('rendering posts');
+    this.postsArray = [];
       for (let i = 0; i < postsList.length; i++) {
         if (postsList[i]['key'] === key) {
           this.userService.getUserList()
             .subscribe(userList => {
               for ( let j = 0; j < userList.length; j++) {
                 if (userList[j]['key'] === key) {
-                  {
-                    this.postsArray = [];
                     for (const prop in postsList[i]) {
                       if (prop !== 'key') {
                         postsList[i][prop].username = userList[j].firstName + ' ' + userList[j].lastName;
                         this.postsArray.unshift(postsList[i][prop]);
                       }
                     }
-                  }
+                    break;
                 }
               }
             }, error => {
               console.log(error.message);
             });
+          break;
         }
       }
   }

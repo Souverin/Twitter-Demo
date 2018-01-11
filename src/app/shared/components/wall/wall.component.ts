@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PostService} from '../../../services/post.service';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from '../../../services/user.service';
@@ -8,8 +8,10 @@ import {UserService} from '../../../services/user.service';
   templateUrl: './wall.component.html',
   styleUrls: ['./wall.component.css']
 })
-export class WallComponent implements OnInit {
+export class WallComponent implements OnInit, OnDestroy {
   key;
+  postSubscription;
+
   constructor(protected postService: PostService,
               private route: ActivatedRoute) { }
 
@@ -17,7 +19,7 @@ export class WallComponent implements OnInit {
     this.route.params.subscribe(params => {
         this.key = this.route.routeConfig.path === 'me' ?
           JSON.parse(localStorage.getItem('loggedUserKey')) : params.id;
-        this.postService.getPosts()
+        this.postSubscription = this.postService.getPosts()
           .subscribe(postsList => {
             this.postService.renderPostsByKey(postsList, this.key);
           }, error => {
@@ -25,5 +27,8 @@ export class WallComponent implements OnInit {
             console.log(error.message);
           });
     });
+  }
+  ngOnDestroy() {
+    this.postSubscription.unsubscribe();
   }
 }

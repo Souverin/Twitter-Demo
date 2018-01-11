@@ -28,7 +28,6 @@ export class BriefUserInfoComponent implements OnInit {
       } else {
         this.userService.getUserList()
           .subscribe(userList => {
-            console.log('userList', userList);
             for ( let i = 0; i < userList.length; i++) {
               if (userList[i]['key'] === params.id) {
                 this.renderBriefUserInfo(userList[i]);
@@ -40,7 +39,6 @@ export class BriefUserInfoComponent implements OnInit {
       }
     });
   }
-  // circlular dependencies
   renderBriefUserInfo (user) {
     this.userService.userFirstName = user.firstName;
     this.userService.userLastName = user.lastName;

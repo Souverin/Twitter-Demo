@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth.service';
 })
 
 
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   logged;
   constructor (protected authService: AuthService) {}
@@ -48,5 +48,10 @@ export class LoginFormComponent implements OnInit {
   }
   tooBigPassword() {
     return this.password.errors != null && this.password.errors['maxlength'] && (this.password.touched || this.logged);
+  }
+  ngOnDestroy() {
+    if (this.authService.signInSubscription) {
+      this.authService.signInSubscription.unsubscribe();
+    }
   }
 }

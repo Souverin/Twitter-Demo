@@ -1,10 +1,11 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {UserService} from './user.service';
 import {AngularFireDatabase} from 'angularfire2/database';
 
 @Injectable()
 export class FollowService implements OnInit {
+  userSubscription;
   followed;
   followList;
   followedArray = [];
@@ -16,7 +17,7 @@ export class FollowService implements OnInit {
   follow (params) {
     this.followed = true;
       console.log(params);
-      this.userService.getUserList()
+      this.userSubscription = this.userService.getUserList()
         .subscribe(userList => {
           console.log('userList', userList);
           for ( let i = 0; i < userList.length; i++) {
@@ -81,6 +82,7 @@ export class FollowService implements OnInit {
 
   }
   renderFollowedArrayByKey (followed, userKey) {
+    console.log('rendering followed array');
     this.followedArray = [];
     for (let i = 0; i < followed.length; i++) {
       if (followed[i].key === userKey) {

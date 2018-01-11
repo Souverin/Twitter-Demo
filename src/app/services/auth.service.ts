@@ -6,7 +6,8 @@ import {UserService} from './user.service';
 
 @Injectable()
 export class AuthService {
-  posts;
+  signInSubscription;
+  signUpSubscription;
   signInErrorMessage;
   signUpErrorMessage;
   usersList;
@@ -17,7 +18,7 @@ export class AuthService {
     firebase.auth()
       .signInWithEmailAndPassword(email, password)
       .then( () => {
-        this.userService.getUserList().subscribe(userList => {
+        this.signInSubscription = this.userService.getUserList().subscribe(userList => {
           this.navigateToMeAfterSuccessfulLoginAndSetLocalStorage(email, userList);
         });
       })
@@ -34,7 +35,7 @@ export class AuthService {
       .then(() => {
         this.usersList = this.database.list('users');
         this.usersList.push({email: email, firstName: firstName, lastName: lastName});
-        this.userService.getUserList().subscribe(userList => {
+        this.signUpSubscription = this.userService.getUserList().subscribe(userList => {
         this.navigateToMeAfterSuccessfulLoginAndSetLocalStorage (email, userList);
         });
       })
@@ -56,6 +57,7 @@ export class AuthService {
           localStorage.setItem('loggedUserFirstName', JSON.stringify(userList[i].firstName));
           localStorage.setItem('loggedUserLastName', JSON.stringify(userList[i].lastName));
           this.router.navigate([ 'me' ]);
+          break;
         }
       }
     }
